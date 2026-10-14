@@ -135,9 +135,10 @@ write('blog.html', inject(read('blog.html'),
 /* about */
 pages.push('about.html');
 write('about.html', inject(read('about.html'),
-  head({ title: `About — ${FULL}`, description: `${A.lead} Based in ${CITY}, ${COUNTRY}. ${(A.services || []).join(', ')}.`, file: 'about.html', type: 'profile',
+  head({ title: `About — ${FULL}`, description: `${A.heading || A.lead} Based in ${CITY}, ${COUNTRY}. ${(A.services || []).join(', ')}.`, file: 'about.html', type: 'profile',
     jsonld: graph({ '@type': 'AboutPage', url: url('about.html'), mainEntity: { '@id': url('#person') } }, crumbs([['Home', ''], ['About', 'about.html']])) }),
-  ssr(`<h1>About ${esc(FULL)}</h1><p>${esc(A.lead)}</p>
+  ssr(`<h1>About ${esc(FULL)}</h1><p>${esc(A.heading || A.lead)}</p>${(A.bio || []).map((p) => `<p>${esc(p.replace(/<[^>]+>/g, ''))}</p>`).join('')}
+<section><h2>Professional experience</h2>${(A.jobs || []).map((j) => `<h3>${esc(j.name)} — ${esc(j.role)}</h3><p>${esc(j.date)}</p>${j.summary ? `<p>${esc(j.summary)}</p>` : ''}<ul>${(j.bullets || []).map((b) => `<li>${esc(b)}</li>`).join('')}</ul>`).join('')}</section>
 ${(A.intro || []).map((x) => `<section><h2>${esc(x.title)}</h2><p>${esc(x.body)}</p></section>`).join('')}
 <section><h2>${esc(A.principlesTitle)}</h2>${(A.principles || []).map((x) => `<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p>`).join('')}</section>
 <section><h2>Experience</h2><ul>${(A.experience || []).map((x) => `<li>${esc(x.role)} — ${esc(x.org)} (${esc(x.years)})</li>`).join('')}</ul></section>

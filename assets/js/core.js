@@ -62,7 +62,8 @@
     'Asking the sun to rise…', 'Feeding the Pac-Man…', 'Untangling the bezier curves…', 'Warming up the vinyl…', 'Folding the paper plane…'];
   window.pageLoader = {
     show: function (ready, opts) {
-      var el = document.getElementById('page-loader'); if (!el) return;
+      var el = document.getElementById('page-loader');
+      if (!el) { document.documentElement.classList.remove('pl-lock'); document.body.classList.remove('pl-lock'); return; }   // never leave the page scroll-locked
       opts = opts || {}; var min = RM ? 600 : (opts.min || 1200), cap = opts.cap || 8000, t0 = performance.now(), done = false;
       var line = el.querySelector('.pl-line');
       var qi = setInterval(function () {

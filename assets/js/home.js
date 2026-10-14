@@ -7,6 +7,8 @@
   var FINE = matchMedia('(hover:hover) and (pointer:fine)').matches;
   var mqDesk = matchMedia('(min-width:1101px)'), mqMob = matchMedia('(max-width:640px)');
   var isNight = function () { return document.body.classList.contains('night'); };
+  var HOME = !!document.querySelector('.hero'), PAGE_ID = document.body.getAttribute('data-page') || 'home';
+  var W = HOME ? '' : 'index.html';   // in-page anchors on the home page, links from other pages
 
   /* ======================= NAV ======================= */
   var SUN_IC = '<svg class="sun-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="#f5a623"/>' +
@@ -17,13 +19,13 @@
     return '<nav id="nav" class="nav-on-dark" aria-label="Main">' +
       '<div class="nav-side"><img class="pin" src="assets/img/pin.svg" width="14" height="20" alt=""><span class="nav-loc">' + esc(S.location) + '</span><span class="nav-meta" aria-live="off"><span class="nav-time"></span><span class="wx"></span></span></div>' +
       '<div class="nav-pill" id="nav-pill">' +
-      '<div class="nav-id"><a class="nav-avatar" href="#top" data-no-curtain aria-label="Back to top"><img src="assets/img/avatar.svg" alt=""></a></div>' +
+      '<div class="nav-id"><a class="nav-avatar" href="' + (HOME ? '#top' : 'index.html') + '"' + (HOME ? ' data-no-curtain' : '') + ' aria-label="' + (HOME ? 'Back to top' : 'Home') + '"><img src="assets/img/avatar.svg" alt=""></a></div>' +
       '<div class="avail-tag"><span class="avail-text">Available for work</span></div><span class="avail-dot"></span>' +
       '<div class="nav-links" id="nav-links-group">' +
-      '<a href="#work" class="nav-link" data-spy="work">Work</a>' +
+      '<a href="' + W + '#work" class="nav-link" data-spy="work">Work</a>' +
       '<a href="projects.html" class="nav-link">Projects</a>' +
       '<a href="blog.html" class="nav-link">Blogs</a>' +
-      '<a href="about.html" class="nav-link">About</a>' +
+      '<a href="about.html" class="nav-link' + (PAGE_ID === 'about' ? ' active" aria-current="page' : '') + '">About</a>' +
       '<a href="#contact" class="nav-cta" data-contact-open><img src="assets/img/email.svg" width="24" height="24" alt="">Work with me</a>' +
       '<button class="nav-burger" type="button" aria-expanded="false" aria-controls="menu-overlay" aria-label="Open menu"><span></span><span></span></button>' +
       '</div></div>' +
@@ -32,7 +34,7 @@
       '<button class="day-toggle" id="theme-toggle" type="button" aria-label="Toggle night mode" aria-pressed="false">' + SUN_IC + MOON_IC + '</button>' +
       '</div></nav>' +
       '<div class="menu-overlay" id="menu-overlay" aria-hidden="true"><ul class="menu-links">' +
-      [['#work', 'Work'], ['projects.html', 'Projects'], ['blog.html', 'Blogs'], ['about.html', 'About'], ['#contact', 'Contact']].map(function (l, i) {
+      [[W + '#work', 'Work'], ['projects.html', 'Projects'], ['blog.html', 'Blogs'], ['about.html', 'About'], ['#contact', 'Contact']].map(function (l, i) {
         return '<li><a class="menu-link" href="' + l[0] + '"' + (l[1] === 'Contact' ? ' data-contact-open' : '') + '><span class="num">0' + (i + 1) + '</span><span class="word">' + l[1] + '</span></a></li>';
       }).join('') + '</ul><p class="menu-footer">' + esc(S.location) + '</p></div>';
   }
@@ -47,7 +49,7 @@
       else if (s.y < lastY) pill.classList.remove('compact');
       lastY = s.y;
     });
-    $('.nav-avatar').addEventListener('click', function (e) { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); });
+    if (HOME) $('.nav-avatar').addEventListener('click', function (e) { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); });
     // burger + menu
     function setMenu(open) {
       menu.classList.toggle('open', open); nav.classList.toggle('menu-open', open); menu.setAttribute('aria-hidden', String(!open));
@@ -60,7 +62,7 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu.classList.contains('open')) setMenu(false); });
     // scroll-spy
     var work = $('#work'), workLink = $('[data-spy="work"]');
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (en) { workLink.classList.toggle('active', en.isIntersecting); }); }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 }).observe(work);
+    if (work && 'IntersectionObserver' in window) new IntersectionObserver(function (es) { es.forEach(function (en) { workLink.classList.toggle('active', en.isIntersecting); }); }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 }).observe(work);
     // local time + temperature beside the location
     var nt = $('.nav-time'), wx = $('.nav-meta .wx');
     var tick = function () { nt.textContent = '· ' + localTime(); }; tick(); setInterval(tick, 30000);
@@ -827,14 +829,12 @@
   /* ======================= BOOT ======================= */
   initNav();
   initCursor();
-  initHero();
-  initIntro();
-  initWork();
-  initTestimonials();
+  if (HOME) { initHero(); initIntro(); initWork(); initTestimonials(); }
+  else { var wv = $('#nav-wave'); if (wv) wv.hidden = true; }   // the radio (music) lives on the home page
   initFooter();
   // expose plants for proximity helpers
   gardenRef = []; $$('.plant').forEach(function (el) { var svg = el.querySelector('svg'); gardenRef.push({ el: el, H: +svg.getAttribute('height'), g: parseFloat(el.style.getPropertyValue('--g')) }); });
-  initPlaneAndPins();
+  if (HOME) initPlaneAndPins();
   observeReveals();
   // ambient animation gate
   if ('IntersectionObserver' in window) {

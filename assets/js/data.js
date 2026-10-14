@@ -93,6 +93,42 @@ window.ABOUT = {
   services: ["Product design (UX/UI)", "Brand systems & identity", "Design systems", "Interactive prototypes", "Front-end development", "Motion design"],
   contactTitle: "I'd love to talk today."
 };
+/* About page (about.html) — layout follows the reference "about" view: intro + polaroids,
+   experience accordion, fun-fact cards. Replace the placeholder copy and photos with your own.
+   Photos: set `image: "assets/img/about/you.jpg"` on any polaroid / hike photo. */
+window.ABOUT.heading = "I design calm, useful products — and I write the code that ships them.";
+window.ABOUT.bio = [
+  "With 9+ years across product design and front-end development, I bring something most designers don't: <strong>the ability to build what I design</strong>. I've spent the last few years crafting zero-to-one products, scaling design systems and prototyping in real code.",
+  "From founder-led startups in Cebu to teams around the world in health, climate and hospitality, I bring care, range and an eye for detail to every build."
+];
+window.ABOUT.polaroids = [
+  { alt: "A weekend food spread", palette: ["#b2451f", "#f3b27a", "#fbf0e4"], motif: "sun" },
+  { alt: "Island-hopping off the coast of Cebu", palette: ["#0f4d42", "#7fdcc3", "#eafaf5"], motif: "wave" },
+  { alt: "Looking up at a concrete facade", palette: ["#1f3a8a", "#9cc3ff", "#f0f5ff"], motif: "arches" },
+  { alt: "Portrait of Shintaine", palette: ["#5a4500", "#ffd75e", "#fff8df"], motif: "orbit", image: "" }
+];
+window.ABOUT.jobs = [
+  { name: "Independent", role: "Product Designer & Creative Developer", date: "Jan 2023 – Present",
+    summary: "Product and brand work for founders in health, climate and hospitality — from first workshop to shipped code.",
+    bullets: ["Led design and front-end for Fieldnote, an offline-first research journal; weekly active usage tripled after launch.",
+              "Rebranded Lumen Health end-to-end, lifting sign-up conversion by 18%.",
+              "Built interactive prototypes and production UI in HTML, CSS and JavaScript alongside client engineering teams."] },
+  { name: "Parcel", role: "Senior Product Designer", date: "Mar 2020 – Dec 2022",
+    bullets: ["Redesigned the seller dashboard around exceptions, cutting support tickets by 27%.",
+              "Owned the design system, tokens and documentation used by four product squads."] },
+  { name: "Northwind", role: "Product Designer", date: "Jun 2017 – Feb 2020",
+    bullets: ["Designed core flows for a mobile banking app used by 2M+ people, from onboarding to payments."] },
+  { name: "Freelance", role: "Graphic & Web Designer", date: "2015 – 2017",
+    bullets: ["Identities, websites and print for small businesses and events around Cebu."] }
+];
+window.ABOUT.fun = {
+  hikes: { label: "Hikes", year: "2026" },
+  todo: { day: "Saturday", title: "Weekend To do", items: ["Try the new café in IT Park", "Sunrise hike at Osmeña Peak", "Portfolio", "Island hopping with friends", "Movie night"] },
+  song: { line: "A playlist that never gets", em: "old...", by: "@shintayyyn", length: 213 },
+  quote: { a: "Less, ", b: "but ", c: "better.", cite: "– dieter rams" },
+  coded: { kicker: "Recently coded", title: "This portfolio", cta: "VIEW", url: "https://github.com/shintayyyn/itsshintayyyn", plus: "+12" }
+};
+
 window.ASK_SUGGESTIONS = ["Tell me about a recent project", "What services do you offer?", "How can I hire you?", "Where are you based?"];
 
 window.PROJECTS = [
