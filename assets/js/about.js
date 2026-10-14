@@ -373,7 +373,8 @@
       '<div class="edu-card" aria-live="polite"><div class="edu-card-inner"></div></div>' +
       '<div class="edu-steps-wrap"><ol class="edu-steps">' + EDU.map(function (e, i) { return '<li><button type="button" class="edu-step" data-i="' + i + '"><span class="n">' + (i + 1) + '</span><span>' + esc(e.level) + '</span><span class="y">' + esc(e.years) + '</span></button></li>'; }).join('') + '</ol></div></div>' +
       '<div class="edu-map-wrap"><div class="edu-map">' + eduMapSVG() + '</div><span class="edu-hint">Scroll or tap a pin</span></div>' +
-      '<div class="edu-list">' + EDU.map(function (e, i) { return '<article class="edu-card" data-i="' + i + '"><div class="edu-card-inner">' + eduCardHTML(e, i, n) + '</div></article>'; }).join('') + '</div></div>';
+      '<div class="edu-swipe"><div class="edu-list" role="region" aria-roledescription="carousel" aria-label="Education stages">' + EDU.map(function (e, i) { return '<article class="edu-card" data-i="' + i + '" role="group" aria-roledescription="slide" aria-label="' + (i + 1) + ' of ' + n + '"><div class="edu-card-inner">' + eduCardHTML(e, i, n) + '</div></article>'; }).join('') + '</div>' +
+      '<div class="edu-dots" role="tablist" aria-label="Choose stage">' + EDU.map(function (e, i) { return '<button type="button" class="t-dot edu-dot" role="tab" data-i="' + i + '" aria-label="' + esc(e.level) + '"></button>'; }).join('') + '</div></div></div>';
     var road = $('#edu-road', sec), done = $('#edu-road-done', sec), L = road.getTotalLength();
     done.style.strokeDasharray = L; done.style.strokeDashoffset = L;
     var pinLen = EDU.map(function (_, i) { return L * i / (n - 1); });
@@ -387,6 +388,12 @@
         '<g class="tag"><rect x="' + (-w / 2) + '" y="-50" width="' + w + '" height="26" rx="13"/><text y="-37">' + esc(EDU[i].level) + '</text></g></g>'; }).join('');
     var av = $('.edu-avatar', sec), pos = $('.pos', av), flip = $('.flip', av), looks = $$('.look', av);
     var card = $('.edu-side .edu-card', sec), cardIn = $('.edu-side .edu-card-inner', sec), steps = $$('.edu-step', sec), pinEls = $$('.edu-pin', sec), listCards = $$('.edu-list .edu-card', sec);
+    var rail = $('.edu-list', sec), dots = $$('.edu-dot', sec), progT = null, progScroll = false;
+    function syncCarousel(i) {   // page the swipe row to the active stage (mobile/tablet)
+      if (!mqMob.matches || !listCards[i]) return;
+      progScroll = true; clearTimeout(progT); progT = setTimeout(function () { progScroll = false; }, 700);
+      rail.scrollTo({ left: listCards[i].offsetLeft - (rail.clientWidth - listCards[i].offsetWidth) / 2, behavior: RM ? 'auto' : 'smooth' });
+    }
     var cur = -1, len = 0, facing = 1, walkT = null;
     function place(l) {
       l = clamp(l, 0, L); var p = road.getPointAtLength(l), q = road.getPointAtLength(Math.min(L, l + 2)), b = road.getPointAtLength(Math.max(0, l - 2));
@@ -402,6 +409,8 @@
       pinEls.forEach(function (g, k) { g.classList.toggle('active', k === i); g.classList.toggle('done', k < i); });
       steps.forEach(function (s2, k) { if (k === i) s2.setAttribute('aria-current', 'step'); else s2.removeAttribute('aria-current'); s2.classList.toggle('done', k < i); });
       listCards.forEach(function (c, k) { c.classList.toggle('active', k === i); });
+      dots.forEach(function (d, k) { d.setAttribute('aria-selected', String(k === i)); });
+      syncCarousel(i);
       card.classList.add('swap'); setTimeout(function () { cardIn.innerHTML = eduCardHTML(e, i, n); card.classList.remove('swap'); }, cur === i && cardIn.innerHTML ? 180 : 0);
     }
     var tween = null;
@@ -431,13 +440,11 @@
     }
     var flowTop = 0;
     Scroll.add(function (st) {
-      if (mqMob.matches) return;
       flowTop = natTop();
       var run = sec.offsetHeight - st.vh, p = clamp((st.y - flowTop) / (run * .9), 0, 1);
       cancelAnimationFrame(tween); place(p * L); setActive(Math.round(p * (n - 1)));
     });
     function jump(i) {
-      if (mqMob.matches) { walkTo(i); var c = listCards[i]; if (c) c.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); return; }
       var top = natTop(), run = sec.offsetHeight - innerHeight;
       scrollTo({ top: top + run * .9 * (i / (n - 1)) + 2, behavior: RM ? 'auto' : 'smooth' });
     }
@@ -446,11 +453,17 @@
       g.addEventListener('click', function () { jump(+g.dataset.i); });
       g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(+g.dataset.i); } });
     });
-    // mobile: the card in view decides where the little you walks
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (es) { if (!mqMob.matches) return; es.forEach(function (en) { if (en.isIntersecting) walkTo(+en.target.dataset.i); }); }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
-      listCards.forEach(function (c) { io.observe(c); });
-    }
+    // mobile/tablet: swiping the card row (or tapping a dot) moves the page to that stage
+    var swT = null;
+    rail.addEventListener('scroll', function () {
+      if (progScroll) return; clearTimeout(swT);
+      swT = setTimeout(function () {
+        var mid = rail.scrollLeft + rail.clientWidth / 2, best = 0, bd = 1e9;
+        listCards.forEach(function (c, k) { var d = Math.abs(c.offsetLeft + c.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
+        if (best !== cur) jump(best);
+      }, 140);
+    }, { passive: true });
+    dots.forEach(function (d) { d.addEventListener('click', function () { jump(+d.dataset.i); }); });
     place(0); setActive(0);
   }
 

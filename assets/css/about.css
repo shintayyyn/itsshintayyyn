@@ -321,17 +321,31 @@ body.night .edu-step[aria-current="step"] { background: rgba(255, 255, 255, .08)
 body.night .edu-map { background: #1a2647; border-color: rgba(255, 255, 255, .14); }
 body.night .edu-hint { color: rgba(255, 249, 233, .6); }
 
+/* phones & tablets: pinned stage — map on top, one swipeable card row (paginates like the testimonials) */
+@media (min-width: 1101px) { .edu-swipe { display: none; } }
 @media (max-width: 1100px) {
-  .about-edu { height: auto; padding: 72px 0 96px; }
-  .edu-stage { position: static; height: auto; display: block; padding: 0 20px; }
-  .edu-side { gap: 18px; }
-  .edu-map-wrap { position: sticky; top: 64px; z-index: 2; margin: 18px -4px 18px; }
-  .edu-map { border-radius: 22px; }
-  .edu-card, .edu-steps-wrap { display: none; }
-  .edu-list { display: flex; flex-direction: column; gap: 16px; }
+  .about-edu { height: calc(100vh + 1500px); height: calc(100svh + 1500px); padding: 0; }
+  .edu-stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 72px 0 18px; }
+  .edu-side { padding: 0 20px; gap: 6px; }
+  .edu-title { font-size: clamp(26px, 6.6vw, 40px); }
+  .edu-side .edu-card, .edu-steps-wrap { display: none; }
+  .edu-map-wrap { position: relative; top: auto; margin: 0 16px; max-width: none !important; display: flex; justify-content: center; }
+  .edu-map { width: min(100%, calc((100svh - 330px) * 1000 / 640)); border-radius: 22px; }
+  .edu-hint { display: none; }
+  .edu-swipe { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  .edu-list { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; padding: 6px 20px 4px; scroll-padding-inline: 20px; }
+  .edu-list::-webkit-scrollbar { display: none; }
+  .edu-list .edu-card { flex: 0 0 min(86%, 440px); scroll-snap-align: center; scroll-snap-stop: always; padding: 16px 18px; border-radius: 20px; transition: transform .45s var(--expo-out), opacity .35s; }
+  .edu-list .edu-card:not(.active) { transform: scale(.95); opacity: .7; }
+  .edu-list .edu-school { font-size: 22px; } .edu-list .edu-note { font-size: 15px; margin-bottom: 10px; } .edu-list .edu-meta { margin-bottom: 8px; font-size: 13px; }
+  .edu-dots { display: flex; justify-content: center; gap: 8px; }
 }
-@media (min-width: 1101px) { .edu-list { display: none; } }
-.edu-list .edu-card { display: block; min-height: 0; }
-.edu-list .edu-card.active { border-color: #2b2b2b; box-shadow: 8px 10px 24px rgba(0, 0, 0, .16); }
+@media (max-width: 1100px) and (max-height: 700px) { .edu-list .edu-note { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .edu-list .edu-tags { display: none; } }
 @media (prefers-reduced-motion: reduce) { .edu-avatar .look, .edu-card-inner { transition: none; } .edu-avatar.walking .leg, .edu-avatar.walking .bob, .edu-pin.active .pulse { animation: none; } }
 @media (min-width: 1101px) and (max-height: 820px) { .edu-stage { padding-top: 84px; padding-bottom: 24px; } .edu-card { min-height: 0; } }
+.about-edu > .edu-crest { width: 100%; }
+@media (max-width: 1100px) {
+  .edu-stage { align-items: stretch; }
+  .edu-map-wrap { display: block; }
+  .edu-map { margin: 0 auto; }
+}
