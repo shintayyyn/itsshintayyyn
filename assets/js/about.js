@@ -155,29 +155,41 @@
   /* ---------- experience: single-open accordion, bottom pin + hold, recede dim ---------- */
   function initExperience() {
     var items = $$('.aexp-item'), exp = $('.about-exp'), stage = $('.about-exp-stage'), list = $('.aexp-list'), label = $('.aexp-label'), intro = $('.about-intro'), fun = $('.about-fun'), next = $('.about-edu') || fun, dim = $('.about-exp-dim');
+    // accordion: animate each panel to its real height (smooth open + close, no 700px guess)
+    function panelOf(it) { return $('.aexp-panel', it); }
+    function setPanel(it, open) { var p = panelOf(it); p.style.maxHeight = open ? $('.aexp-panel-inner', it).scrollHeight + 'px' : '0px'; }
     items.forEach(function (it) {
+      setPanel(it, it.classList.contains('is-open'));
       $('.aexp-head', it).addEventListener('click', function () {
         var open = !it.classList.contains('is-open');
-        items.forEach(function (o) { var t = o === it && open; o.classList.toggle('is-open', t); $('.aexp-head', o).setAttribute('aria-expanded', String(t)); });
+        items.forEach(function (o) { var t = o === it && open; o.classList.toggle('is-open', t); $('.aexp-head', o).setAttribute('aria-expanded', String(t)); setPanel(o, t); });
       });
     });
+    // reserve room for the tallest role once, so opening/closing never changes the section height
+    // (that change used to re-pin the section and shift everything below it → the sudden jump)
+    function tallestPanel() { return Math.max.apply(null, items.map(function (it) { return $('.aexp-panel-inner', it).scrollHeight; })); }
+    function openPanels() { return items.reduce(function (sum, it) { return sum + panelOf(it).offsetHeight; }, 0); }
     function pinBottom(el) { el.style.position = 'sticky'; el.style.top = Math.min(0, innerHeight - el.offsetHeight) + 'px'; }
     function unpin(el) { el.style.position = ''; el.style.top = ''; }
     function setHold(vh, h, k) { next.style.marginTop = h >= vh ? Math.round(vh * k) + 'px' : ''; }
     function fit() {
+      items.forEach(function (it) { if (it.classList.contains('is-open')) setPanel(it, true); });
+      var maxP = tallestPanel();
       if (mqMob.matches) {
         stage.style.height = ''; label.style.top = '';
         if (RM) { [intro, exp, fun].forEach(unpin); exp.style.minHeight = ''; next.style.marginTop = ''; return; }
-        exp.style.minHeight = innerHeight + 'px'; pinBottom(intro); pinBottom(exp); setHold(innerHeight, exp.offsetHeight, .6); pinBottom(fun);
+        exp.style.minHeight = '';
+        var needed = exp.offsetHeight - openPanels() + maxP;
+        exp.style.minHeight = Math.max(innerHeight, needed) + 'px'; pinBottom(intro); pinBottom(exp); setHold(innerHeight, exp.offsetHeight, .6); pinBottom(fun);
         return;
       }
       unpin(intro); unpin(fun); exp.style.position = ''; exp.style.minHeight = '';
-      var vh = innerHeight, H = Math.max(vh, list.offsetTop + list.offsetHeight + 180);
+      var vh = innerHeight, collapsed = list.offsetHeight - openPanels();
+      var H = Math.max(vh, list.offsetTop + collapsed + maxP + 180);
       stage.style.height = H + 'px'; exp.style.top = Math.min(0, vh - H) + 'px'; setHold(vh, H, .9);
       var first = $('.aexp-item', list); label.style.top = (list.offsetTop + first.offsetTop + label.offsetWidth / 2) + 'px';
     }
     fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
-    list.addEventListener('transitionend', function (e) { if (e.propertyName === 'max-height') fit(); });
     Scroll.add(function (st) {
       if (RM || mqMob.matches) { dim.style.opacity = 0; return; }
       var p = smooth((st.vh - next.getBoundingClientRect().top) / st.vh);
