@@ -23,7 +23,7 @@ const write = (f, s) => { fs.writeFileSync(path.join(ROOT, f), s); console.log('
 // load the site content exactly as the browser does
 const ctx = { window: {} }; vm.createContext(ctx);
 vm.runInContext(read('assets/js/data.js'), ctx);
-const { SITE: S, PROJECTS: P, POSTS: B, TESTIMONIALS: T = [], ABOUT: A = {} } = ctx.window;
+const { SITE: S, PROJECTS: P, POSTS: B, TESTIMONIALS: T = [], ABOUT: A = {}, EDUCATION: E = [] } = ctx.window;
 
 const BASE = (S.siteUrl || 'https://example.com').replace(/\/+$/, '');
 const url = (p = '') => BASE + '/' + p.replace(/^\//, '').replace(/^index\.html$/, '');
@@ -140,6 +140,7 @@ write('about.html', inject(read('about.html'),
   ssr(`<h1>About ${esc(FULL)}</h1><p>${esc(A.heading || A.lead)}</p>${(A.bio || []).map((p) => `<p>${esc(p.replace(/<[^>]+>/g, ''))}</p>`).join('')}
 <section><h2>Professional experience</h2>${(A.jobs || []).map((j) => `<h3>${esc(j.name)} — ${esc(j.role)}</h3><p>${esc(j.date)}</p>${j.summary ? `<p>${esc(j.summary)}</p>` : ''}<ul>${(j.bullets || []).map((b) => `<li>${esc(b)}</li>`).join('')}</ul>`).join('')}</section>
 ${(A.intro || []).map((x) => `<section><h2>${esc(x.title)}</h2><p>${esc(x.body)}</p></section>`).join('')}
+<section><h2>Education</h2><ol>${E.map((e) => `<li><strong>${esc(e.level)}</strong> — ${esc(e.school)}, ${esc(e.place)} (${esc(e.years)}). ${esc(e.note)}</li>`).join('')}</ol></section>
 <section><h2>${esc(A.principlesTitle)}</h2>${(A.principles || []).map((x) => `<h3>${esc(x.title)}</h3><p>${esc(x.body)}</p>`).join('')}</section>
 <section><h2>Experience</h2><ul>${(A.experience || []).map((x) => `<li>${esc(x.role)} — ${esc(x.org)} (${esc(x.years)})</li>`).join('')}</ul></section>
 <section><h2>Services</h2><ul>${(A.services || []).map((x) => `<li>${esc(x)}</li>`).join('')}</ul></section>

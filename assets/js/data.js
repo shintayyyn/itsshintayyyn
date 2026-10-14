@@ -129,6 +129,21 @@ window.ABOUT.fun = {
   coded: { kicker: "Recently coded", title: "This portfolio", cta: "VIEW", url: "https://github.com/shintayyyn/itsshintayyyn", plus: "+12" }
 };
 
+/* Education journey (About page map). Replace the [bracketed] placeholders with your real schools.
+   `look` picks the little character's outfit: child · teen · shs · grad · now */
+window.EDUCATION = [
+  { level: "Elementary", look: "child", school: "[Your elementary school]", place: "Cebu City", years: "2003 – 2009",
+    note: "Where it all started — doodling on every notebook margin and joining every poster-making contest.", tags: ["Art club", "Poster-making"] },
+  { level: "Junior High", look: "teen", school: "[Your junior high school]", place: "Cebu City", years: "2009 – 2013",
+    note: "Discovered computers, made my first websites and designed the class yearbook spreads.", tags: ["Yearbook", "First website"] },
+  { level: "Senior High", look: "shs", school: "[Your senior high school]", place: "Cebu", years: "2013 – 2015",
+    note: "A strand that mixed technology and creativity — the moment design and code clicked together.", tags: ["ICT strand", "Hackathon"] },
+  { level: "College", look: "grad", school: "[Your university]", place: "Cebu", years: "2015 – 2019",
+    note: "[Your degree] — studied interaction design, built side projects and freelanced for local brands.", tags: ["[Your degree]", "Thesis: [topic]"] },
+  { level: "Now", look: "now", school: "Product Designer & Creative Developer", place: "Cebu · Remote", years: "Today",
+    note: "Still learning every day — designing calm products and writing the code that ships them.", tags: ["Design", "Code"] }
+];
+
 window.ASK_SUGGESTIONS = ["Tell me about a recent project", "What services do you offer?", "How can I hire you?", "Where are you based?"];
 
 window.PROJECTS = [

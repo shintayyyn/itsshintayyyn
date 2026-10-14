@@ -153,7 +153,7 @@
 
   /* ---------- experience: single-open accordion, bottom pin + hold, recede dim ---------- */
   function initExperience() {
-    var items = $$('.aexp-item'), exp = $('.about-exp'), stage = $('.about-exp-stage'), list = $('.aexp-list'), label = $('.aexp-label'), intro = $('.about-intro'), fun = $('.about-fun'), dim = $('.about-exp-dim');
+    var items = $$('.aexp-item'), exp = $('.about-exp'), stage = $('.about-exp-stage'), list = $('.aexp-list'), label = $('.aexp-label'), intro = $('.about-intro'), fun = $('.about-fun'), next = $('.about-edu') || fun, dim = $('.about-exp-dim');
     items.forEach(function (it) {
       $('.aexp-head', it).addEventListener('click', function () {
         var open = !it.classList.contains('is-open');
@@ -162,11 +162,11 @@
     });
     function pinBottom(el) { el.style.position = 'sticky'; el.style.top = Math.min(0, innerHeight - el.offsetHeight) + 'px'; }
     function unpin(el) { el.style.position = ''; el.style.top = ''; }
-    function setHold(vh, h, k) { fun.style.marginTop = h >= vh ? Math.round(vh * k) + 'px' : ''; }
+    function setHold(vh, h, k) { next.style.marginTop = h >= vh ? Math.round(vh * k) + 'px' : ''; }
     function fit() {
       if (mqMob.matches) {
         stage.style.height = ''; label.style.top = '';
-        if (RM) { [intro, exp, fun].forEach(unpin); exp.style.minHeight = ''; fun.style.marginTop = ''; return; }
+        if (RM) { [intro, exp, fun].forEach(unpin); exp.style.minHeight = ''; next.style.marginTop = ''; return; }
         exp.style.minHeight = innerHeight + 'px'; pinBottom(intro); pinBottom(exp); setHold(innerHeight, exp.offsetHeight, .6); pinBottom(fun);
         return;
       }
@@ -179,7 +179,7 @@
     list.addEventListener('transitionend', function (e) { if (e.propertyName === 'max-height') fit(); });
     Scroll.add(function (st) {
       if (RM || mqMob.matches) { dim.style.opacity = 0; return; }
-      var p = smooth((st.vh - fun.getBoundingClientRect().top) / st.vh);
+      var p = smooth((st.vh - next.getBoundingClientRect().top) / st.vh);
       dim.style.opacity = (.42 * p).toFixed(3);
     });
   }
@@ -228,6 +228,150 @@
     }
   }
 
-  build(); initIntro(); initPolaroids(); initExperience(); initFun();
+
+  /* ======================= EDUCATION — journey map ======================= */
+  var EDU = window.EDUCATION || [];
+  var SKIN = '#c98f63', HAIR = '#1f1a17';
+  function person(o) {   // a little you, feet at (0,0)
+    var legs = '<g class="leg l"><rect x="-8" y="' + (-o.leg) + '" width="7" height="' + o.leg + '" rx="3" fill="' + o.pants + '"/><rect x="-10" y="-4" width="10" height="5" rx="2.5" fill="#2b2420"/></g>' +
+               '<g class="leg r"><rect x="1" y="' + (-o.leg) + '" width="7" height="' + o.leg + '" rx="3" fill="' + o.pants + '"/><rect x="0" y="-4" width="10" height="5" rx="2.5" fill="#2b2420"/></g>';
+    var top = -o.leg, torsoH = o.torso, headY = top - torsoH - o.head + 3;
+    var back = o.bag ? '<rect x="-15" y="' + (top - torsoH + 3) + '" width="12" height="' + (torsoH - 4) + '" rx="4" fill="' + o.bag + '"/>' : '';
+    var torso = o.gown ? '<path d="M-14 ' + (top - torsoH) + ' h28 l5 ' + (torsoH + o.leg - 8) + ' h-38z" fill="#1f1d2b"/><path d="M-4 ' + (top - torsoH) + ' l4 8 l4 -8" fill="#fff9f1"/>'
+      : '<rect x="-12" y="' + (top - torsoH) + '" width="24" height="' + torsoH + '" rx="9" fill="' + o.shirt + '"/>' + (o.tie ? '<path d="M0 ' + (top - torsoH + 2) + ' l-3 4 l3 12 l3 -12z" fill="' + o.tie + '"/>' : '') +
+        (o.hood ? '<path d="M-10 ' + (top - torsoH + 2) + ' q10 -8 20 0" stroke="#d9654a" stroke-width="4" fill="none"/>' : '');
+    var arms = '<rect x="-17" y="' + (top - torsoH + 3) + '" width="6" height="' + (torsoH - 6) + '" rx="3" fill="' + (o.gown ? '#1f1d2b' : o.shirt) + '"/><rect x="11" y="' + (top - torsoH + 3) + '" width="6" height="' + (torsoH - 6) + '" rx="3" fill="' + (o.gown ? '#1f1d2b' : o.shirt) + '"/>';
+    var held = o.hold === 'book' ? '<rect x="12" y="' + (top - 12) + '" width="14" height="11" rx="2" fill="#5788b3"/><rect x="12" y="' + (top - 15) + '" width="14" height="4" rx="1.5" fill="#ffda3f"/>'
+      : o.hold === 'diploma' ? '<rect x="12" y="' + (top - 14) + '" width="18" height="6" rx="3" fill="#fff9f1" stroke="#c9b48a"/><rect x="19" y="' + (top - 14) + '" width="3" height="6" fill="#e8402e"/>'
+      : o.hold === 'laptop' ? '<rect x="10" y="' + (top - 16) + '" width="22" height="14" rx="2" fill="#3b3f4a"/><rect x="12" y="' + (top - 14) + '" width="18" height="10" rx="1" fill="#9fd0f5"/>' : '';
+    var head = '<circle cx="0" cy="' + headY + '" r="' + o.head + '" fill="' + SKIN + '"/>' +
+      '<path d="M' + (-o.head) + ' ' + (headY - 1) + ' a' + o.head + ' ' + o.head + ' 0 0 1 ' + (o.head * 2) + ' 0 q-' + o.head + ' -' + (o.head * .45) + ' -' + (o.head * 2) + ' 0z" fill="' + HAIR + '"/>' +
+      (o.pony ? '<path d="M' + (o.head - 2) + ' ' + (headY - 4) + ' q10 6 4 18" stroke="' + HAIR + '" stroke-width="5" fill="none" stroke-linecap="round"/>' : '') +
+      '<circle cx="-5" cy="' + (headY + 2) + '" r="1.8" fill="#1f1a17"/><circle cx="5" cy="' + (headY + 2) + '" r="1.8" fill="#1f1a17"/>' +
+      '<path d="M-3 ' + (headY + 7) + ' q3 3 6 0" stroke="#1f1a17" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
+      '<circle cx="-9" cy="' + (headY + 6) + '" r="2.4" fill="#fc9073" opacity=".6"/><circle cx="9" cy="' + (headY + 6) + '" r="2.4" fill="#fc9073" opacity=".6"/>' +
+      (o.glasses ? '<circle cx="-5" cy="' + (headY + 2) + '" r="4.2" fill="none" stroke="#2b2420" stroke-width="1.3"/><circle cx="5" cy="' + (headY + 2) + '" r="4.2" fill="none" stroke="#2b2420" stroke-width="1.3"/><path d="M-1 ' + (headY + 2) + ' h2" stroke="#2b2420" stroke-width="1.3"/>' : '') +
+      (o.cap ? '<path d="M-17 ' + (headY - o.head + 2) + ' l17 -7 l17 7 l-17 7z" fill="#1f1d2b"/><rect x="-8" y="' + (headY - o.head + 4) + '" width="16" height="5" fill="#1f1d2b"/><path d="M12 ' + (headY - o.head + 4) + ' v9" stroke="#ffda3f" stroke-width="2"/><circle cx="12" cy="' + (headY - o.head + 14) + '" r="2" fill="#ffda3f"/>' : '');
+    return back + legs + torso + arms + held + head;
+  }
+  var LOOKS = {
+    child: { leg: 16, torso: 20, head: 15, shirt: '#ffda3f', pants: '#1f3b6d', bag: '#fc9073', pony: true },
+    teen:  { leg: 22, torso: 24, head: 14, shirt: '#ffffff', pants: '#1f2a44', bag: '#1f3b6d', tie: '#1f3b6d', pony: true },
+    shs:   { leg: 24, torso: 25, head: 14, shirt: '#fc9073', pants: '#2b2b2b', hood: true, hold: 'book', pony: true },
+    grad:  { leg: 25, torso: 26, head: 14, gown: true, pants: '#1f1d2b', cap: true, hold: 'diploma' },
+    now:   { leg: 26, torso: 26, head: 14, shirt: '#eee8d2', pants: '#2b3a55', hold: 'laptop', glasses: true, pony: true }
+  };
+  function tree(x, y, s) { return '<g transform="translate(' + x + ' ' + y + ') scale(' + (s || 1) + ')"><rect x="-2.5" y="-6" width="5" height="14" fill="#8a6a4f"/><circle cx="0" cy="-16" r="14" fill="#9cbf52"/><circle cx="-8" cy="-10" r="9" fill="#7fa65a"/></g>'; }
+  function palm(x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><path d="M0 0 q-3 -22 3 -44" stroke="#8a6a4f" stroke-width="4" fill="none"/><g fill="#5c8f3a"><path d="M3 -44 q-20 -6 -30 6 q16 -4 30 -6z"/><path d="M3 -44 q20 -8 30 4 q-16 -4 -30 -4z"/><path d="M3 -44 q-6 -18 -22 -20 q12 8 22 20z"/><path d="M3 -44 q10 -18 26 -16 q-14 4 -26 16z"/></g></g>'; }
+  var LANDMARKS = [
+    function (x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-26" y="-34" width="52" height="34" fill="#fff9f1" stroke="#2b2b2b" stroke-width="2"/><path d="M-32 -32 L0 -56 L32 -32Z" fill="#fc9073" stroke="#2b2b2b" stroke-width="2"/><rect x="-6" y="-18" width="12" height="18" fill="#5788b3"/><circle cx="0" cy="-42" r="4" fill="#ffda3f"/><path d="M30 -34 v-34" stroke="#2b2b2b" stroke-width="2"/><path d="M30 -68 h16 l-4 6 l4 6 h-16z" fill="#e8402e"/></g>'; },
+    function (x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-34" y="-52" width="68" height="52" fill="#fff9f1" stroke="#2b2b2b" stroke-width="2"/><rect x="-38" y="-58" width="76" height="8" fill="#1f3b6d"/>' + [-24, -8, 8, 24].map(function (wx) { return '<rect x="' + (wx - 5) + '" y="-44" width="10" height="9" fill="#9fd0f5"/><rect x="' + (wx - 5) + '" y="-26" width="10" height="9" fill="#9fd0f5"/>'; }).join('') + '<rect x="-6" y="-14" width="12" height="14" fill="#1f3b6d"/></g>'; },
+    function (x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-30" y="-40" width="60" height="40" rx="4" fill="#fff9f1" stroke="#2b2b2b" stroke-width="2"/><rect x="-30" y="-46" width="60" height="8" rx="3" fill="#fc9073"/><g transform="translate(18 -6)"><rect x="-14" y="-8" width="28" height="7" fill="#5788b3"/><rect x="-12" y="-15" width="24" height="7" fill="#ffda3f"/><rect x="-10" y="-22" width="20" height="7" fill="#9cbf52"/></g><rect x="-22" y="-30" width="16" height="12" fill="#9fd0f5"/></g>'; },
+    function (x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-44" y="-38" width="88" height="38" fill="#fff9f1" stroke="#2b2b2b" stroke-width="2"/><path d="M-50 -38 h100 l-50 -16z" fill="#eee8d2" stroke="#2b2b2b" stroke-width="2"/><path d="M-16 -54 a16 16 0 0 1 32 0z" fill="#ffda3f" stroke="#2b2b2b" stroke-width="2"/>' + [-32, -16, 0, 16, 32].map(function (cx) { return '<rect x="' + (cx - 3) + '" y="-34" width="6" height="30" fill="#e7dfcd"/>'; }).join('') + '</g>' + palm(x + 60, y) + palm(x - 58, y + 2); },
+    function (x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-34" y="-20" width="68" height="6" rx="2" fill="#8a6a4f"/><rect x="-30" y="-14" width="5" height="14" fill="#8a6a4f"/><rect x="25" y="-14" width="5" height="14" fill="#8a6a4f"/><rect x="-16" y="-40" width="30" height="20" rx="2" fill="#3b3f4a"/><rect x="-14" y="-38" width="26" height="16" rx="1" fill="#71b7f4"/><rect x="18" y="-30" width="8" height="10" rx="2" fill="#fff9f1" stroke="#2b2b2b"/><path d="M-26 -20 q-2 -16 6 -22" stroke="#5c8f3a" stroke-width="3" fill="none"/><circle cx="-20" cy="-42" r="5" fill="#9cbf52"/></g>'; }
+  ];
+  function eduMapSVG() {
+    var road = 'M95 560 C200 560 230 470 300 450 C390 425 420 520 520 500 C640 476 610 370 530 330 C455 292 470 212 560 190 C660 166 720 262 800 232 C870 206 860 128 905 100';
+    var grid = ''; for (var gx = 0; gx <= 1000; gx += 40) grid += '<path d="M' + gx + ' 0V640" stroke="#efe4cd" stroke-width="1"/>'; for (var gy = 0; gy <= 640; gy += 40) grid += '<path d="M0 ' + gy + 'H1000" stroke="#efe4cd" stroke-width="1"/>';
+    return '<svg viewBox="0 0 1000 640" role="img" aria-label="Map of my education journey"><defs><linearGradient id="edusea" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fd0f5"/><stop offset="1" stop-color="#5aa9e6"/></linearGradient></defs>' +
+      '<rect width="1000" height="640" fill="#fbf5e8"/>' + grid +
+      '<path d="M1000 300 C930 330 900 420 940 470 C980 520 950 600 1000 640Z" fill="url(#edusea)"/><path d="M948 380 q10 -6 20 0 M958 470 q10 -6 20 0 M944 560 q10 -6 20 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+      '<path d="M40 210 L110 120 L150 170 L200 100 L270 210Z" fill="#cfd8b8"/><path d="M200 100 l-14 18 l14 -4 l14 6z" fill="#fff"/>' +
+      '<g transform="translate(70 70)"><circle r="26" fill="#fff9f1" stroke="#2b2b2b" stroke-width="1.5"/><path d="M0 -22 L6 0 L0 22 L-6 0Z" fill="#fc9073"/><path d="M-22 0 L0 -5 L22 0 L0 5Z" fill="#e7dfcd"/><text y="-30" text-anchor="middle" font-size="12" font-family="Space Grotesk" fill="#2b2b2b">N</text></g>' +
+      [[150, 420], [400, 600], [690, 560], [620, 120], [360, 260], [760, 380], [240, 330], [470, 90], [860, 600]].map(function (t, i) { return tree(t[0], t[1], .8 + (i % 3) * .15); }).join('') +
+      '<text x="955" y="430" font-family="JetBrains Mono" font-size="12" fill="#2f6f9c" transform="rotate(-70 955 430)">CEBU STRAIT</text>' +
+      '<path class="edu-road-base" d="' + road + '"/><path class="edu-road-trail" d="' + road + '"/><path class="edu-road-done" id="edu-road-done" d="' + road + '"/>' +
+      '<path id="edu-road" d="' + road + '" fill="none" stroke="none"/><g class="edu-landmarks"></g><g class="edu-pins"></g>' +
+      '<g class="edu-avatar"><g class="pos"><g class="flip"><ellipse class="shadow" cx="0" cy="2" rx="16" ry="4"/><g class="bob">' +
+      Object.keys(LOOKS).map(function (k) { return '<g class="look look-' + k + '"' + (k === 'child' ? ' style="transform-origin:50% 100%"' : '') + '>' + person(LOOKS[k]) + '</g>'; }).join('') + '</g></g></g></g></svg>';
+  }
+  function eduCardHTML(e, i, n) {
+    return '<p class="edu-k">' + String(i + 1).padStart(2, '0') + ' · ' + esc(e.level) + '</p><h3 class="edu-school">' + esc(e.school) + '</h3><p class="edu-meta">' + esc(e.years) + ' · ' + esc(e.place) + '</p>' +
+      '<p class="edu-note">' + esc(e.note) + '</p><div class="edu-tags">' + (e.tags || []).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>';
+  }
+  function initEducation() {
+    var sec = $('.about-edu'); if (!sec || !EDU.length) return;
+    var n = EDU.length;
+    sec.innerHTML = '<svg class="edu-crest" viewBox="0 0 1440 72" preserveAspectRatio="none" aria-hidden="true"><path d="M0 72 L0 34 Q90 10 180 34 T360 34 T540 34 T720 34 T900 34 T1080 34 T1260 34 T1440 34 L1440 72Z"/></svg>' +
+      '<div class="edu-stage"><div class="edu-side"><p class="edu-eyebrow">Education</p><h2 class="edu-title">The road that shaped me</h2>' +
+      '<div class="edu-card" aria-live="polite"><div class="edu-card-inner"></div></div>' +
+      '<div class="edu-steps-wrap"><ol class="edu-steps">' + EDU.map(function (e, i) { return '<li><button type="button" class="edu-step" data-i="' + i + '"><span class="n">' + (i + 1) + '</span><span>' + esc(e.level) + '</span><span class="y">' + esc(e.years) + '</span></button></li>'; }).join('') + '</ol></div></div>' +
+      '<div class="edu-map-wrap"><div class="edu-map">' + eduMapSVG() + '</div><span class="edu-hint">Scroll or tap a pin</span></div>' +
+      '<div class="edu-list">' + EDU.map(function (e, i) { return '<article class="edu-card" data-i="' + i + '"><div class="edu-card-inner">' + eduCardHTML(e, i, n) + '</div></article>'; }).join('') + '</div></div>';
+    var road = $('#edu-road', sec), done = $('#edu-road-done', sec), L = road.getTotalLength();
+    done.style.strokeDasharray = L; done.style.strokeDashoffset = L;
+    var pinLen = EDU.map(function (_, i) { return L * i / (n - 1); });
+    var pins = pinLen.map(function (l) { return road.getPointAtLength(l); });
+    // landmarks beside each pin, then the numbered pins
+    $('.edu-landmarks', sec).innerHTML = pins.map(function (p, i) { var side = i % 2 ? -1 : 1; return (LANDMARKS[i] || LANDMARKS[LANDMARKS.length - 1])(p.x + side * 78, p.y - 18); }).join('');
+    $('.edu-pins', sec).innerHTML = pins.map(function (p, i) {
+      var w = EDU[i].level.length * 8 + 22;
+      return '<g class="edu-pin" data-i="' + i + '" tabindex="0" role="button" aria-label="' + esc(EDU[i].level + ', ' + EDU[i].years) + '" transform="translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ')">' +
+        '<circle class="pulse" r="15"/><circle class="dot" r="14"/><text>' + (i + 1) + '</text>' +
+        '<g class="tag"><rect x="' + (-w / 2) + '" y="-50" width="' + w + '" height="26" rx="13"/><text y="-37">' + esc(EDU[i].level) + '</text></g></g>'; }).join('');
+    var av = $('.edu-avatar', sec), pos = $('.pos', av), flip = $('.flip', av), looks = $$('.look', av);
+    var card = $('.edu-side .edu-card', sec), cardIn = $('.edu-side .edu-card-inner', sec), steps = $$('.edu-step', sec), pinEls = $$('.edu-pin', sec), listCards = $$('.edu-list .edu-card', sec);
+    var cur = -1, len = 0, facing = 1, walkT = null;
+    function place(l) {
+      l = clamp(l, 0, L); var p = road.getPointAtLength(l), q = road.getPointAtLength(Math.min(L, l + 2)), b = road.getPointAtLength(Math.max(0, l - 2));
+      var dx = q.x - b.x; if (Math.abs(dx) > .3) facing = dx < 0 ? -1 : 1;
+      pos.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + (p.y - 4).toFixed(1) + ') scale(1.75)'); flip.setAttribute('transform', 'scale(' + facing + ' 1)');
+      done.style.strokeDashoffset = (L - l).toFixed(1);
+      if (Math.abs(l - len) > .5) { av.classList.add('walking'); clearTimeout(walkT); walkT = setTimeout(function () { av.classList.remove('walking'); }, 160); }
+      len = l;
+    }
+    function setActive(i) {
+      if (i === cur) return; cur = i; var e = EDU[i];
+      looks.forEach(function (g) { g.classList.toggle('on', g.classList.contains('look-' + (e.look || 'now'))); });
+      pinEls.forEach(function (g, k) { g.classList.toggle('active', k === i); g.classList.toggle('done', k < i); });
+      steps.forEach(function (s2, k) { if (k === i) s2.setAttribute('aria-current', 'step'); else s2.removeAttribute('aria-current'); s2.classList.toggle('done', k < i); });
+      listCards.forEach(function (c, k) { c.classList.toggle('active', k === i); });
+      card.classList.add('swap'); setTimeout(function () { cardIn.innerHTML = eduCardHTML(e, i, n); card.classList.remove('swap'); }, cur === i && cardIn.innerHTML ? 180 : 0);
+    }
+    var tween = null;
+    function walkTo(i) {
+      setActive(i); cancelAnimationFrame(tween);
+      var from = len, to = pinLen[i], t0 = 0, D = RM ? 0 : Math.min(1400, 300 + Math.abs(to - from) * 1.6);
+      if (!D) { place(to); return; }
+      tween = requestAnimationFrame(function fr(t) { if (!t0) t0 = t; var k = Math.min(1, (t - t0) / D), e2 = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; place(from + (to - from) * e2); if (k < 1) tween = requestAnimationFrame(fr); });
+    }
+    // desktop: progress through the section's scroll runway drives the walk; section bottom-pins so fun facts slides over it
+    function fit() {
+      if (mqMob.matches) { sec.style.position = ''; sec.style.top = ''; return; }
+      sec.style.position = 'sticky'; sec.style.top = Math.min(0, innerHeight - sec.offsetHeight) + 'px';
+    }
+    fit(); addEventListener('resize', fit);
+    // natural (un-pinned) document top: everything before it in <main> + its hold margin
+    function natTop() {
+      var m = sec.parentElement, y = m.getBoundingClientRect().top + scrollY + (parseFloat(getComputedStyle(sec).marginTop) || 0);
+      for (var el = m.firstElementChild; el && el !== sec; el = el.nextElementSibling) y += el.offsetHeight;
+      return y;
+    }
+    var flowTop = 0;
+    Scroll.add(function (st) {
+      if (mqMob.matches) return;
+      flowTop = natTop();
+      var run = sec.offsetHeight - st.vh, p = clamp((st.y - flowTop) / (run * .9), 0, 1);
+      cancelAnimationFrame(tween); place(p * L); setActive(Math.round(p * (n - 1)));
+    });
+    function jump(i) {
+      if (mqMob.matches) { walkTo(i); var c = listCards[i]; if (c) c.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' }); return; }
+      var top = natTop(), run = sec.offsetHeight - innerHeight;
+      scrollTo({ top: top + run * .9 * (i / (n - 1)) + 2, behavior: RM ? 'auto' : 'smooth' });
+    }
+    steps.forEach(function (b) { b.addEventListener('click', function () { jump(+b.dataset.i); }); });
+    pinEls.forEach(function (g) {
+      g.addEventListener('click', function () { jump(+g.dataset.i); });
+      g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(+g.dataset.i); } });
+    });
+    // mobile: the card in view decides where the little you walks
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { if (!mqMob.matches) return; es.forEach(function (en) { if (en.isIntersecting) walkTo(+en.target.dataset.i); }); }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+      listCards.forEach(function (c) { io.observe(c); });
+    }
+    place(0); setActive(0);
+  }
+
+  build(); initEducation(); initIntro(); initPolaroids(); initExperience(); initFun();
   if (window.updateNavContrast) window.updateNavContrast();
 })();

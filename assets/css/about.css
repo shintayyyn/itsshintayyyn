@@ -246,3 +246,91 @@ body.night .about-fun > .aff-bg { filter: brightness(.72) saturate(.9); }
 @media (prefers-reduced-motion: reduce) {
   .ai-polaroid.is-settling, .ai-polaroid.is-dropping, .ff-card, .ff-photo, .ff-media > * { transition: none; }
 }
+
+/* ==========================================================================
+   EDUCATION — journey map: a little you walks the road through each school
+   Layers: intro 1 · experience 2 · education 3 · fun facts 4 · footer 12
+   ========================================================================== */
+.about-fun { z-index: 4; }
+.about-edu { position: relative; z-index: 3; height: calc(100vh + 1800px); background: #f3ead6; color: #2b2b2b; --edu-ink: #2b2b2b; }
+.about-edu > .edu-crest { position: absolute; left: 0; right: 0; top: -70px; height: 72px; pointer-events: none; }
+.edu-crest path { fill: #f3ead6; }
+.edu-stage { position: sticky; top: 0; height: 100vh; display: grid; grid-template-columns: minmax(300px, 420px) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: center;
+  max-width: 1360px; margin: 0 auto; padding: 96px clamp(24px, 4vw, 56px) 40px; }
+.edu-side { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.edu-eyebrow { font: 400 13px 'JetBrains Mono', monospace; letter-spacing: 1.6px; text-transform: uppercase; color: rgba(43, 43, 43, .6); margin: 0; display: flex; align-items: center; gap: 8px; }
+.edu-eyebrow::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: #ffda3f; }
+.edu-title { font: 400 clamp(36px, 4vw, 52px)/1.05 'DM Serif Display', serif; letter-spacing: -.02em; margin: 0; color: var(--text-heading, #000); }
+.edu-card { position: relative; min-height: 220px; background: #fff; border: 1px solid rgba(0, 0, 0, .12); border-radius: 26px; padding: 24px 24px 22px; box-shadow: 8px 10px 24px rgba(0, 0, 0, .1); overflow: hidden; }
+.edu-card::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .55; background-image: linear-gradient(#e7eef5 1px, transparent 1px); background-size: 100% 26px; }
+.edu-card-inner { position: relative; transition: opacity .35s ease, transform .45s var(--expo-out); }
+.edu-card.swap .edu-card-inner { opacity: 0; transform: translateY(10px); }
+.edu-k { font: 400 12px 'JetBrains Mono', monospace; letter-spacing: 1.4px; text-transform: uppercase; color: #fc9073; margin: 0 0 8px; }
+.edu-school { font: 400 30px/1.12 'DM Serif Display', serif; color: #00315c; margin: 0 0 6px; }
+.edu-meta { font: 400 15px 'Space Grotesk', sans-serif; color: #6d6d6d; margin: 0 0 12px; }
+.edu-note { font: 400 17px/1.55 'Space Grotesk', sans-serif; letter-spacing: -.3px; margin: 0 0 14px; color: var(--edu-ink); }
+.edu-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.edu-tags span { font: 400 13px 'Space Grotesk', sans-serif; padding: 6px 12px; border-radius: 999px; background: #fff8df; border: 1px solid #f4cd44; color: #5a4500; }
+.edu-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.edu-step { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 12px; text-align: left; color: var(--edu-ink);
+  font: 400 16px 'Space Grotesk', sans-serif; transition: background .25s, transform .3s var(--spring-pop); }
+.edu-step:hover { background: rgba(255, 218, 63, .22); transform: translateX(3px); }
+.edu-step .n { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 600 11px 'Space Grotesk', sans-serif; background: #fff; border: 1.5px solid rgba(0, 0, 0, .25); transition: background .3s, border-color .3s; }
+.edu-step .y { font: 400 12px 'JetBrains Mono', monospace; color: #8a8a8a; letter-spacing: .5px; }
+.edu-step[aria-current="step"] { background: #fff; box-shadow: 0 4px 14px rgba(0, 0, 0, .08); }
+.edu-step[aria-current="step"] .n { background: #ffda3f; border-color: #2b2b2b; }
+.edu-step.done .n { background: #2b2b2b; color: #fff9f1; border-color: #2b2b2b; }
+
+/* map */
+.edu-map-wrap { position: relative; min-width: 0; }
+.edu-map { position: relative; width: 100%; aspect-ratio: 1000 / 640; border-radius: 30px; overflow: hidden; background: #fbf5e8; border: 1px solid rgba(0, 0, 0, .12); box-shadow: 10px 12px 30px rgba(0, 0, 0, .12); }
+.edu-map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.edu-road-trail { fill: none; stroke: #fc9073; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 2 14; }
+.edu-road-base { fill: none; stroke: #e9dcc0; stroke-width: 26; stroke-linecap: round; stroke-linejoin: round; }
+.edu-road-done { fill: none; stroke: #fc9073; stroke-width: 5; stroke-linecap: round; }
+.edu-pin { cursor: pointer; }
+.edu-pin .pulse { fill: none; stroke: #ffda3f; stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.edu-pin.active .pulse { animation: edu-pulse 1.6s cubic-bezier(.4, 0, .6, 1) infinite; }
+@keyframes edu-pulse { 0% { opacity: .9; transform: scale(.8); } 100% { opacity: 0; transform: scale(2.1); } }
+.edu-pin .dot { fill: #fff; stroke: #2b2b2b; stroke-width: 2.5; transition: fill .3s; }
+.edu-pin.active .dot, .edu-pin.done .dot { fill: #ffda3f; }
+.edu-pin text { font: 700 13px 'Space Grotesk', sans-serif; fill: #2b2b2b; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.edu-pin .tag rect { fill: #2b2b2b; } .edu-pin .tag text { fill: #fff9f1; font-weight: 500; font-size: 13px; }
+.edu-pin .tag { opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .4s var(--expo-out); }
+.edu-pin.active .tag, .edu-pin:hover .tag, .edu-pin:focus .tag { opacity: 1; transform: none; }
+.edu-pin:focus { outline: none; }
+.edu-pin:focus-visible .dot { stroke: #fc9073; stroke-width: 4; }
+
+/* the little you */
+.edu-avatar { pointer-events: none; }
+.edu-avatar .look { opacity: 0; transform: scale(.6); transform-box: fill-box; transform-origin: 50% 100%; transition: opacity .25s ease, transform .45s var(--spring-pop); }
+.edu-avatar .look.on { opacity: 1; transform: scale(1); }
+.edu-avatar .bob { animation: none; }
+.edu-avatar.walking .bob { animation: edu-bob .38s ease-in-out infinite alternate; }
+@keyframes edu-bob { from { transform: translateY(0); } to { transform: translateY(-3px); } }
+.edu-avatar .leg { transform-box: fill-box; transform-origin: 50% 0; }
+.edu-avatar.walking .leg.l { animation: edu-leg .38s ease-in-out infinite alternate; }
+.edu-avatar.walking .leg.r { animation: edu-leg .38s ease-in-out infinite alternate-reverse; }
+@keyframes edu-leg { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
+.edu-avatar .shadow { fill: rgba(0, 0, 0, .18); }
+.edu-hint { position: absolute; left: 18px; bottom: 14px; font: 400 11px 'JetBrains Mono', monospace; letter-spacing: 1.3px; text-transform: uppercase; color: rgba(43, 43, 43, .55); pointer-events: none; }
+body.night .about-edu { background: #101a33; color: #eee; --edu-ink: rgba(255, 249, 233, .85); }
+body.night .edu-crest path { fill: #101a33; }
+body.night .edu-eyebrow, body.night .edu-step .y { color: rgba(255, 249, 233, .6); }
+body.night .edu-step[aria-current="step"] { background: rgba(255, 255, 255, .08); }
+body.night .edu-map { background: #1a2647; border-color: rgba(255, 255, 255, .14); }
+body.night .edu-hint { color: rgba(255, 249, 233, .6); }
+
+@media (max-width: 1100px) {
+  .about-edu { height: auto; padding: 72px 0 96px; }
+  .edu-stage { position: static; height: auto; display: block; padding: 0 20px; }
+  .edu-side { gap: 18px; }
+  .edu-map-wrap { position: sticky; top: 64px; z-index: 2; margin: 18px -4px 18px; }
+  .edu-map { border-radius: 22px; }
+  .edu-card, .edu-steps-wrap { display: none; }
+  .edu-list { display: flex; flex-direction: column; gap: 16px; }
+}
+@media (min-width: 1101px) { .edu-list { display: none; } }
+.edu-list .edu-card { display: block; min-height: 0; }
+.edu-list .edu-card.active { border-color: #2b2b2b; box-shadow: 8px 10px 24px rgba(0, 0, 0, .16); }
+@media (prefers-reduced-motion: reduce) { .edu-avatar .look, .edu-card-inner { transition: none; } .edu-avatar.walking .leg, .edu-avatar.walking .bob, .edu-pin.active .pulse { animation: none; } }
