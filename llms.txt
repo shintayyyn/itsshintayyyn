@@ -1,0 +1,38 @@
+# Shintaine Ruiz Tajanlangit
+
+> Product Designer & Creative Developer based in Cebu, Philippines. I'm a product designer who codes. For nine years I've helped founders in health, climate and hospitality turn fuzzy ideas into calm, useful products.
+
+- Email: shintainet@gmail.com
+- GitHub: https://github.com/shintayyyn
+- Instagram: https://www.instagram.com/shintayyyn/
+- Services: Product design (UX/UI); Brand systems & identity; Design systems; Interactive prototypes; Front-end development; Motion design
+
+## Pages
+- [Home](https://itsshintayyyn.vercel.app/): portfolio overview, featured work and testimonials
+- [Projects](https://itsshintayyyn.vercel.app/projects.html): all case studies
+- [Blogs](https://itsshintayyyn.vercel.app/blog.html): writing on design, typography, motion and building products
+- [About](https://itsshintayyyn.vercel.app/about.html): background, principles, experience and how to work together
+
+## Projects
+- [Fieldnote](https://itsshintayyyn.vercel.app/project-fieldnote.html): A calm, offline‑first journaling app for field researchers. (Lead Product Designer, Research tools, 2026)
+- [Lumen Health](https://itsshintayyyn.vercel.app/project-lumen-health.html): Rebranding a telehealth platform to feel less clinical, more human. (Design Lead, Health-tech, 2025)
+- [Kettle & Co](https://itsshintayyyn.vercel.app/project-kettle-co.html): Identity and ordering experience for a neighbourhood tea house. (Brand & Web Designer, Hospitality, 2025)
+- [Orbit Labs](https://itsshintayyyn.vercel.app/project-orbit-labs.html): A data visualisation toolkit and dashboard for climate scientists. (Product Designer & Front‑end, Climate science, 2024)
+- [Parcel](https://itsshintayyyn.vercel.app/project-parcel.html): Shipping dashboard redesign for small online sellers. (Senior Product Designer, Logistics, 2024)
+- [Monograph](https://itsshintayyyn.vercel.app/project-monograph.html): Type‑led identity and website for an independent architecture press. (Designer, Publishing, 2023)
+- [Tandem](https://itsshintayyyn.vercel.app/project-tandem.html): A shared-budget app for couples and housemates. (Product Designer, Fintech, 2023)
+
+## Blog posts
+- [Designing for no signal](https://itsshintayyyn.vercel.app/blog-designing-for-no-signal.html): What an offline‑first app taught me about trust and honesty in UI. (2026-09-18)
+- [Notes on type pairing](https://itsshintayyyn.vercel.app/blog-type-pairing-notes.html): A practical approach to pairing a serif and a sans. (2026-07-02)
+- [Motion with meaning](https://itsshintayyyn.vercel.app/blog-motion-with-meaning.html): Animation should explain change, not decorate it. (2026-05-11)
+- [Brand systems, not logos](https://itsshintayyyn.vercel.app/blog-brand-systems-not-logos.html): Why I pitch flexible systems instead of one perfect mark. (2026-03-20)
+- [One drawing a day](https://itsshintayyyn.vercel.app/blog-drawing-every-day.html): What a daily illustration habit did for my client work. (2025-12-29)
+- [What cafés taught me about UX](https://itsshintayyyn.vercel.app/blog-hospitality-ux.html): Lessons from designing where every second at the counter counts. (2025-10-08)
+
+## Testimonials
+- "Shintaine turned a vague idea into a product our users genuinely love. A rare mix of taste and rigor — every decision came with a reason, and every detail was considered. Working together felt less like hiring a designer and more like gaining a co-founder for the product side." — Amara Osei, CEO, Fieldnote
+- "The brand system is still paying off two years later. Every team uses it without asking, and our product finally looks like the company we want to be. Shintaine's documentation alone saved us months." — Daniel Reyes, CMO, Lumen Health
+- "Fast, thoughtful and a joy to collaborate with. The prototypes alone sold the project internally — leadership could feel how the product would work before we wrote a line of production code." — Priya Nair, Head of Product, Orbit Labs
+- "Shintaine has a gift for making complicated things feel obvious. Our onboarding went from our biggest drop-off point to the part customers compliment most." — Tomás Herrera, Founder, Parcel
+- "Every handoff was immaculate — annotated, responsive, accessible. Our engineers asked if we could keep Shintaine forever." — Mei Lin, Engineering Lead, Monograph

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="195" height="195" viewBox="0 0 195 195" fill="none">
+  <defs>
+    <pattern id="h" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="9" height="15" fill="#FFF9E9"/>
+    </pattern>
+    <clipPath id="c"><circle cx="97.5" cy="97.5" r="97"/></clipPath>
+  </defs>
+  <g clip-path="url(#c)"><rect width="195" height="195" fill="url(#h)"/></g>
+</svg>

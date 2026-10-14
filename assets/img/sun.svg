@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="725" height="725" viewBox="0 0 725 725" fill="none">
+  <defs>
+    <filter id="g" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="46"/></filter>
+    <pattern id="h" width="15" height="15" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <rect width="9" height="15" fill="#FFDA3F"/>
+    </pattern>
+    <clipPath id="c"><circle cx="362.5" cy="362.5" r="98"/></clipPath>
+  </defs>
+  <circle cx="362.5" cy="362.5" r="209" fill="#FFF7D4" fill-opacity=".45" filter="url(#g)"/>
+  <g clip-path="url(#c)"><rect x="250" y="250" width="225" height="225" fill="url(#h)"/></g>
+</svg>
