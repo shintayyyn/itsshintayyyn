@@ -231,36 +231,84 @@
 
   /* ======================= EDUCATION — journey map ======================= */
   var EDU = window.EDUCATION || [];
-  var SKIN = '#c98f63', HAIR = '#1f1a17';
-  function person(o) {   // a little you, feet at (0,0)
-    var legs = '<g class="leg l"><rect x="-8" y="' + (-o.leg) + '" width="7" height="' + o.leg + '" rx="3" fill="' + o.pants + '"/><rect x="-10" y="-4" width="10" height="5" rx="2.5" fill="#2b2420"/></g>' +
-               '<g class="leg r"><rect x="1" y="' + (-o.leg) + '" width="7" height="' + o.leg + '" rx="3" fill="' + o.pants + '"/><rect x="0" y="-4" width="10" height="5" rx="2.5" fill="#2b2420"/></g>';
-    var top = -o.leg, torsoH = o.torso, headY = top - torsoH - o.head + 3;
-    var back = o.bag ? '<rect x="-15" y="' + (top - torsoH + 3) + '" width="12" height="' + (torsoH - 4) + '" rx="4" fill="' + o.bag + '"/>' : '';
-    var torso = o.gown ? '<path d="M-14 ' + (top - torsoH) + ' h28 l5 ' + (torsoH + o.leg - 8) + ' h-38z" fill="#1f1d2b"/><path d="M-4 ' + (top - torsoH) + ' l4 8 l4 -8" fill="#fff9f1"/>'
-      : '<rect x="-12" y="' + (top - torsoH) + '" width="24" height="' + torsoH + '" rx="9" fill="' + o.shirt + '"/>' + (o.tie ? '<path d="M0 ' + (top - torsoH + 2) + ' l-3 4 l3 12 l3 -12z" fill="' + o.tie + '"/>' : '') +
-        (o.hood ? '<path d="M-10 ' + (top - torsoH + 2) + ' q10 -8 20 0" stroke="#d9654a" stroke-width="4" fill="none"/>' : '');
-    var arms = '<rect x="-17" y="' + (top - torsoH + 3) + '" width="6" height="' + (torsoH - 6) + '" rx="3" fill="' + (o.gown ? '#1f1d2b' : o.shirt) + '"/><rect x="11" y="' + (top - torsoH + 3) + '" width="6" height="' + (torsoH - 6) + '" rx="3" fill="' + (o.gown ? '#1f1d2b' : o.shirt) + '"/>';
-    var held = o.hold === 'book' ? '<rect x="12" y="' + (top - 12) + '" width="14" height="11" rx="2" fill="#5788b3"/><rect x="12" y="' + (top - 15) + '" width="14" height="4" rx="1.5" fill="#ffda3f"/>'
-      : o.hold === 'diploma' ? '<rect x="12" y="' + (top - 14) + '" width="18" height="6" rx="3" fill="#fff9f1" stroke="#c9b48a"/><rect x="19" y="' + (top - 14) + '" width="3" height="6" fill="#e8402e"/>'
-      : o.hold === 'laptop' ? '<rect x="10" y="' + (top - 16) + '" width="22" height="14" rx="2" fill="#3b3f4a"/><rect x="12" y="' + (top - 14) + '" width="18" height="10" rx="1" fill="#9fd0f5"/>' : '';
-    var head = '<circle cx="0" cy="' + headY + '" r="' + o.head + '" fill="' + SKIN + '"/>' +
-      '<path d="M' + (-o.head) + ' ' + (headY - 1) + ' a' + o.head + ' ' + o.head + ' 0 0 1 ' + (o.head * 2) + ' 0 q-' + o.head + ' -' + (o.head * .45) + ' -' + (o.head * 2) + ' 0z" fill="' + HAIR + '"/>' +
-      (o.pony ? '<path d="M' + (o.head - 2) + ' ' + (headY - 4) + ' q10 6 4 18" stroke="' + HAIR + '" stroke-width="5" fill="none" stroke-linecap="round"/>' : '') +
-      '<circle cx="-5" cy="' + (headY + 2) + '" r="1.8" fill="#1f1a17"/><circle cx="5" cy="' + (headY + 2) + '" r="1.8" fill="#1f1a17"/>' +
-      '<path d="M-3 ' + (headY + 7) + ' q3 3 6 0" stroke="#1f1a17" stroke-width="1.4" fill="none" stroke-linecap="round"/>' +
-      '<circle cx="-9" cy="' + (headY + 6) + '" r="2.4" fill="#fc9073" opacity=".6"/><circle cx="9" cy="' + (headY + 6) + '" r="2.4" fill="#fc9073" opacity=".6"/>' +
-      (o.glasses ? '<circle cx="-5" cy="' + (headY + 2) + '" r="4.2" fill="none" stroke="#2b2420" stroke-width="1.3"/><circle cx="5" cy="' + (headY + 2) + '" r="4.2" fill="none" stroke="#2b2420" stroke-width="1.3"/><path d="M-1 ' + (headY + 2) + ' h2" stroke="#2b2420" stroke-width="1.3"/>' : '') +
-      (o.cap ? '<path d="M-17 ' + (headY - o.head + 2) + ' l17 -7 l17 7 l-17 7z" fill="#1f1d2b"/><rect x="-8" y="' + (headY - o.head + 4) + '" width="16" height="5" fill="#1f1d2b"/><path d="M12 ' + (headY - o.head + 4) + ' v9" stroke="#ffda3f" stroke-width="2"/><circle cx="12" cy="' + (headY - o.head + 14) + '" r="2" fill="#ffda3f"/>' : '');
-    return back + legs + torso + arms + held + head;
+  /* --- the little you: 3D-cartoon style (big eyes, soft shading), feet at (0,0) --- */
+  var HAIR = '#6b4228', HAIR_HI = '#8f5d3b', SKIN_SH = '#e7ac88';
+  function backHair(cy, o) {
+    var out = '';
+    if (o.longHair) out += '<path d="M-17 ' + (cy - 4) + ' C-22 ' + (cy + 14) + ' -20 ' + (cy + 34) + ' -14 ' + (cy + 44) + ' L14 ' + (cy + 44) + ' C20 ' + (cy + 34) + ' 22 ' + (cy + 14) + ' 17 ' + (cy - 4) + ' Z" fill="url(#eduHair)"/>' +
+      '<path d="M-17 ' + (cy + 20) + ' q-3 8 1 14 M17 ' + (cy + 20) + ' q3 8 -1 14" stroke="' + HAIR_HI + '" stroke-width="2" fill="none" opacity=".7"/>';
+    if (o.pony) out += '<path d="M10 ' + (cy - 12) + ' C26 ' + (cy - 14) + ' 28 ' + (cy + 6) + ' 20 ' + (cy + 18) + ' C24 ' + (cy + 4) + ' 20 ' + (cy - 6) + ' 9 ' + (cy - 6) + 'Z" fill="url(#eduHair)"/>';
+    return out;
+  }
+  function face(cy, o) {   // head centred at (0, cy), radius 16 (front layer)
+    var r = 16, out = '';
+    if (o.buns) out += '<circle cx="-13" cy="' + (cy - 14) + '" r="8" fill="url(#eduHair)"/><circle cx="13" cy="' + (cy - 14) + '" r="8" fill="url(#eduHair)"/>' +
+      '<circle cx="-8" cy="' + (cy - 19) + '" r="2.6" fill="#e9dcc0" stroke="#c9b48a" stroke-width=".6"/><circle cx="8" cy="' + (cy - 19) + '" r="2.6" fill="#e9dcc0" stroke="#c9b48a" stroke-width=".6"/>';
+    out += '<circle cx="-15.5" cy="' + (cy + 2) + '" r="3.4" fill="' + SKIN_SH + '"/><circle cx="15.5" cy="' + (cy + 2) + '" r="3.4" fill="' + SKIN_SH + '"/>' +
+      '<circle cx="0" cy="' + cy + '" r="' + r + '" fill="url(#eduSkin)"/>' +
+      // fringe: side-swept bangs
+      '<path d="M-16 ' + (cy - 1) + ' C-17 ' + (cy - 16) + ' -6 ' + (cy - 20) + ' 2 ' + (cy - 18) + ' C12 ' + (cy - 17) + ' 18 ' + (cy - 9) + ' 16 ' + (cy - 1) + ' C11 ' + (cy - 9) + ' 4 ' + (cy - 10) + ' -2 ' + (cy - 8) + ' C-7 ' + (cy - 6) + ' -12 ' + (cy - 5) + ' -16 ' + (cy - 1) + 'Z" fill="url(#eduHair)"/>' +
+      '<path d="M-6 ' + (cy - 16) + ' q6 -3 12 0" stroke="' + HAIR_HI + '" stroke-width="1.6" fill="none" opacity=".8"/>' +
+      // brows + big eyes
+      '<path d="M-10 ' + (cy - 3) + ' q4 -2.5 7 -.5 M3 ' + (cy - 3.5) + ' q3.5 -2 7 .5" stroke="#5a3a24" stroke-width="1.3" fill="none" stroke-linecap="round"/>' +
+      [-6, 6].map(function (x) { return '<ellipse cx="' + x + '" cy="' + (cy + 2.5) + '" rx="3.6" ry="4.3" fill="#fff"/><circle cx="' + x + '" cy="' + (cy + 3) + '" r="2.9" fill="#7a4b2a"/><circle cx="' + x + '" cy="' + (cy + 3) + '" r="1.5" fill="#2a1a10"/><circle cx="' + (x + 1.1) + '" cy="' + (cy + 1.8) + '" r=".9" fill="#fff"/><path d="M' + (x - 3.8) + ' ' + (cy + .2) + ' q3.8 -3 7.6 0" stroke="#2a1a10" stroke-width="1.1" fill="none"/>'; }).join('') +
+      '<path d="M0 ' + (cy + 5) + ' q-1 2 .8 2.4" stroke="' + SKIN_SH + '" stroke-width="1" fill="none"/>' +
+      '<path d="M-3.4 ' + (cy + 9.2) + ' q3.4 2.6 6.8 0" stroke="#b5584a" stroke-width="1.3" fill="#e98b7b" stroke-linecap="round"/>' +
+      '<ellipse cx="-10.5" cy="' + (cy + 7.5) + '" rx="3" ry="1.9" fill="#f29a8c" opacity=".55"/><ellipse cx="10.5" cy="' + (cy + 7.5) + '" rx="3" ry="1.9" fill="#f29a8c" opacity=".55"/>';
+    if (o.glasses) out += '<g fill="none" stroke="#2b2420" stroke-width="1.3"><circle cx="-6" cy="' + (cy + 2.6) + '" r="5.2"/><circle cx="6" cy="' + (cy + 2.6) + '" r="5.2"/><path d="M-.8 ' + (cy + 2) + ' h1.6 M-11.2 ' + (cy + 1.6) + ' l-4.2 -1 M11.2 ' + (cy + 1.6) + ' l4.2 -1"/></g>';
+    if (o.cap) out += '<path d="M-20 ' + (cy - 14) + ' L0 ' + (cy - 22) + ' L20 ' + (cy - 14) + ' L0 ' + (cy - 6) + 'Z" fill="#26243a"/><path d="M-11 ' + (cy - 11) + ' v4 q11 5 22 0 v-4" fill="#1d1b2c"/><path d="M14 ' + (cy - 12) + ' v12" stroke="#ffda3f" stroke-width="1.8"/><circle cx="14" cy="' + cy + '" r="2.2" fill="#ffda3f"/>';
+    return out;
+  }
+  function legs(len, color, sock, shoe, wide) {
+    var w = wide ? 8 : 7;
+    function leg(x, cls) { return '<g class="leg ' + cls + '"><rect x="' + x + '" y="' + (-len) + '" width="' + w + '" height="' + len + '" rx="3.5" fill="' + color + '"/>' + (sock ? '<rect x="' + x + '" y="-11" width="' + w + '" height="6" fill="' + sock + '"/>' : '') +
+      '<path d="M' + (x - 2) + ' -5 h' + (w + 5) + ' q2 0 2 2.5 v1.5 h-' + (w + 7) + 'z" fill="' + shoe + '"/><path d="M' + (x - 2) + ' -.8 h' + (w + 7) + '" stroke="#f3ead2" stroke-width="1.2"/></g>'; }
+    return leg(-8.5, 'l') + leg(1.5, 'r');
   }
   var LOOKS = {
-    child: { leg: 16, torso: 20, head: 15, shirt: '#ffda3f', pants: '#1f3b6d', bag: '#fc9073', pony: true },
-    teen:  { leg: 22, torso: 24, head: 14, shirt: '#ffffff', pants: '#1f2a44', bag: '#1f3b6d', tie: '#1f3b6d', pony: true },
-    shs:   { leg: 24, torso: 25, head: 14, shirt: '#fc9073', pants: '#2b2b2b', hood: true, hold: 'book', pony: true },
-    grad:  { leg: 25, torso: 26, head: 14, gown: true, pants: '#1f1d2b', cap: true, hold: 'diploma' },
-    now:   { leg: 26, torso: 26, head: 14, shirt: '#eee8d2', pants: '#2b3a55', hold: 'laptop', glasses: true, pony: true }
+    // Elementary — buns, yellow coat, mint scarf, backpack, teal leggings, brown boots
+    child: function () {
+      var t = -18; return '<rect x="-17" y="' + (t - 22) + '" width="11" height="20" rx="4" fill="#c9a56f"/>' + legs(18, '#5fb6a8', null, '#9a6232', true) +
+        '<path d="M-13 ' + (t - 24) + ' h26 l3 ' + 26 + ' h-32z" fill="url(#eduCoat)"/><path d="M0 ' + (t - 24) + ' v24" stroke="#d9a536" stroke-width="1"/>' +
+        '<rect x="-10" y="' + (t - 10) + '" width="7" height="5" rx="1.5" fill="#e5b33e" stroke="#c9952e" stroke-width=".6"/><rect x="3" y="' + (t - 10) + '" width="7" height="5" rx="1.5" fill="#e5b33e" stroke="#c9952e" stroke-width=".6"/>' +
+        '<rect x="-19" y="' + (t - 22) + '" width="6" height="17" rx="3" fill="url(#eduCoat)" transform="rotate(8 -16 ' + (t - 22) + ')"/><rect x="13" y="' + (t - 22) + '" width="6" height="17" rx="3" fill="url(#eduCoat)" transform="rotate(-8 16 ' + (t - 22) + ')"/>' +
+        '<path d="M-11 ' + (t - 26) + ' q11 7 22 0 q1 4 -2 6 q-9 4 -18 0 q-3 -2 -2 -6z" fill="#9fdcc8"/><path d="M5 ' + (t - 22) + ' l3 9 l-5 1z" fill="#8ccfb9"/>' +
+        face(t - 42, { buns: true });
+    },
+    // Junior High — ponytail, white blouse, navy ribbon tie, navy skirt, socks, backpack
+    teen: function () {
+      var t = -24; return backHair(t - 38, { pony: true }) + '<rect x="-17" y="' + (t - 22) + '" width="11" height="20" rx="4" fill="#1f3b6d"/>' + legs(24, '#f2c6a5', '#ffffff', '#2b2420') +
+        '<path d="M-13 ' + (t + 2) + ' h26 l4 9 h-34z" fill="#1f3b6d"/><rect x="-12" y="' + (t - 22) + '" width="24" height="25" rx="8" fill="#fbfbf8"/>' +
+        '<path d="M-4 ' + (t - 21) + ' l4 4 l4 -4 l-1 9 l-3 -2 l-3 2z" fill="#1f3b6d"/>' +
+        '<rect x="-17" y="' + (t - 20) + '" width="6" height="18" rx="3" fill="#fbfbf8"/><rect x="11" y="' + (t - 20) + '" width="6" height="18" rx="3" fill="#fbfbf8"/>' +
+        '<circle cx="-14" cy="' + (t - 1) + '" r="3" fill="#f2c6a5"/><circle cx="14" cy="' + (t - 1) + '" r="3" fill="#f2c6a5"/>' + face(t - 38, { pony: true });
+    },
+    // Senior High — half-up hair, mustard cardigan over white, jeans, holding books
+    shs: function () {
+      var t = -25; return backHair(t - 40, { longHair: true }) + legs(25, '#5b7fae', null, '#f3ead2') +
+        '<rect x="-12" y="' + (t - 24) + '" width="24" height="27" rx="8" fill="#e3a83a"/><path d="M-4 ' + (t - 24) + ' l4 10 l4 -10z" fill="#fbfbf8"/><path d="M0 ' + (t - 14) + ' v17" stroke="#c98d24" stroke-width="1"/>' +
+        '<rect x="-17" y="' + (t - 22) + '" width="6" height="19" rx="3" fill="#e3a83a"/><rect x="11" y="' + (t - 22) + '" width="6" height="15" rx="3" fill="#e3a83a"/>' +
+        '<g transform="translate(9 ' + (t - 12) + ') rotate(-8)"><rect x="0" y="0" width="16" height="5" rx="1" fill="#5788b3"/><rect x="1" y="-5" width="15" height="5" rx="1" fill="#fc9073"/><rect x="0" y="-10" width="14" height="5" rx="1" fill="#9cbf52"/></g>' +
+        '<circle cx="-14" cy="' + (t - 2) + '" r="3" fill="#f2c6a5"/>' + face(t - 40, { longHair: true });
+    },
+    // College — graduation cap & gown with a gold stole, diploma
+    grad: function () {
+      var t = -24; return backHair(t - 40, { longHair: true, cap: true }) + legs(24, '#2b2420', null, '#2b2420') +
+        '<path d="M-14 ' + (t - 24) + ' h28 l6 ' + 40 + ' h-40z" fill="url(#eduGown)"/><path d="M-6 ' + (t - 24) + ' l-3 34 h5 l4 -30z M6 ' + (t - 24) + ' l3 34 h-5 l-4 -30z" fill="#ffda3f"/>' +
+        '<path d="M-17 ' + (t - 22) + ' l-4 22 h7 l3 -20z" fill="#26243a"/><path d="M17 ' + (t - 22) + ' l2 14 h-6 l-1 -12z" fill="#26243a"/>' +
+        '<rect x="12" y="' + (t - 10) + '" width="17" height="6" rx="3" fill="#fbf5e8" stroke="#c9b48a" stroke-width=".7"/><rect x="19" y="' + (t - 10) + '" width="3" height="6" fill="#e8402e"/>' + face(t - 40, { longHair: true, cap: true });
+    },
+    // Now — long wavy hair, round glasses, grey blazer over white top, arms crossed, watch
+    now: function () {
+      var t = -26; return backHair(t - 42, { longHair: true, glasses: true }) + legs(26, '#3a3d45', null, '#2b2420') +
+        '<rect x="-13" y="' + (t - 26) + '" width="26" height="29" rx="8" fill="url(#eduBlazer)"/><path d="M-5 ' + (t - 26) + ' l5 13 l5 -13z" fill="#f4f1ec"/>' +
+        '<path d="M-6 ' + (t - 26) + ' l6 14 l-3 2z M6 ' + (t - 26) + ' l-6 14 l3 2z" fill="#5d6068"/><rect x="-12" y="' + (t + 1) + '" width="24" height="3" fill="#2b2420"/>' +
+        '<path d="M-16 ' + (t - 22) + ' q-4 12 4 16 h22 q4 -1 2 -5 h-18 q-3 -2 -2 -11z" fill="url(#eduBlazer)"/><path d="M16 ' + (t - 22) + ' q4 10 -2 14 h-18 q-4 0 -2 -5 h14 q2 -2 1 -9z" fill="#6d7079"/>' +
+        '<circle cx="-11" cy="' + (t - 7) + '" r="2.6" fill="#f2c6a5"/><circle cx="12" cy="' + (t - 11) + '" r="2.6" fill="#f2c6a5"/><rect x="5" y="' + (t - 12.5) + '" width="3" height="3.4" rx=".8" fill="#c9b48a" stroke="#2b2420" stroke-width=".5"/>' +
+        face(t - 42, { longHair: true, glasses: true });
+    }
   };
+  function person(k) { return (LOOKS[k] || LOOKS.now)(); }
   function tree(x, y, s) { return '<g transform="translate(' + x + ' ' + y + ') scale(' + (s || 1) + ')"><rect x="-2.5" y="-6" width="5" height="14" fill="#8a6a4f"/><circle cx="0" cy="-16" r="14" fill="#9cbf52"/><circle cx="-8" cy="-10" r="9" fill="#7fa65a"/></g>'; }
   function palm(x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><path d="M0 0 q-3 -22 3 -44" stroke="#8a6a4f" stroke-width="4" fill="none"/><g fill="#5c8f3a"><path d="M3 -44 q-20 -6 -30 6 q16 -4 30 -6z"/><path d="M3 -44 q20 -8 30 4 q-16 -4 -30 -4z"/><path d="M3 -44 q-6 -18 -22 -20 q12 8 22 20z"/><path d="M3 -44 q10 -18 26 -16 q-14 4 -26 16z"/></g></g>'; }
   var LANDMARKS = [
@@ -273,7 +321,12 @@
   function eduMapSVG() {
     var road = 'M95 560 C200 560 230 470 300 450 C390 425 420 520 520 500 C640 476 610 370 530 330 C455 292 470 212 560 190 C660 166 720 262 800 232 C870 206 860 128 905 100';
     var grid = ''; for (var gx = 0; gx <= 1000; gx += 40) grid += '<path d="M' + gx + ' 0V640" stroke="#efe4cd" stroke-width="1"/>'; for (var gy = 0; gy <= 640; gy += 40) grid += '<path d="M0 ' + gy + 'H1000" stroke="#efe4cd" stroke-width="1"/>';
-    return '<svg viewBox="0 0 1000 640" role="img" aria-label="Map of my education journey"><defs><linearGradient id="edusea" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fd0f5"/><stop offset="1" stop-color="#5aa9e6"/></linearGradient></defs>' +
+    return '<svg viewBox="0 0 1000 640" role="img" aria-label="Map of my education journey"><defs><linearGradient id="edusea" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fd0f5"/><stop offset="1" stop-color="#5aa9e6"/></linearGradient>' +
+      '<radialGradient id="eduSkin" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#fbdcc4"/><stop offset=".7" stop-color="#f2c6a5"/><stop offset="1" stop-color="#e3a985"/></radialGradient>' +
+      '<linearGradient id="eduHair" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8f5d3b"/><stop offset="1" stop-color="#5a361f"/></linearGradient>' +
+      '<linearGradient id="eduCoat" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd76a"/><stop offset="1" stop-color="#e8ae35"/></linearGradient>' +
+      '<linearGradient id="eduBlazer" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a8d95"/><stop offset="1" stop-color="#5b5e66"/></linearGradient>' +
+      '<linearGradient id="eduGown" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a3852"/><stop offset=".5" stop-color="#26243a"/><stop offset="1" stop-color="#1b1a2a"/></linearGradient></defs>' +
       '<rect width="1000" height="640" fill="#fbf5e8"/>' + grid +
       '<path d="M1000 300 C930 330 900 420 940 470 C980 520 950 600 1000 640Z" fill="url(#edusea)"/><path d="M948 380 q10 -6 20 0 M958 470 q10 -6 20 0 M944 560 q10 -6 20 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
       '<path d="M40 210 L110 120 L150 170 L200 100 L270 210Z" fill="#cfd8b8"/><path d="M200 100 l-14 18 l14 -4 l14 6z" fill="#fff"/>' +
@@ -283,7 +336,7 @@
       '<path class="edu-road-base" d="' + road + '"/><path class="edu-road-trail" d="' + road + '"/><path class="edu-road-done" id="edu-road-done" d="' + road + '"/>' +
       '<path id="edu-road" d="' + road + '" fill="none" stroke="none"/><g class="edu-landmarks"></g><g class="edu-pins"></g>' +
       '<g class="edu-avatar"><g class="pos"><g class="flip"><ellipse class="shadow" cx="0" cy="2" rx="16" ry="4"/><g class="bob">' +
-      Object.keys(LOOKS).map(function (k) { return '<g class="look look-' + k + '"' + (k === 'child' ? ' style="transform-origin:50% 100%"' : '') + '>' + person(LOOKS[k]) + '</g>'; }).join('') + '</g></g></g></g></svg>';
+      Object.keys(LOOKS).map(function (k) { return '<g class="look look-' + k + '">' + person(k) + '</g>'; }).join('') + '</g></g></g></g></svg>';
   }
   function eduCardHTML(e, i, n) {
     return '<p class="edu-k">' + String(i + 1).padStart(2, '0') + ' · ' + esc(e.level) + '</p><h3 class="edu-school">' + esc(e.school) + '</h3><p class="edu-meta">' + esc(e.years) + ' · ' + esc(e.place) + '</p>' +
@@ -315,7 +368,7 @@
     function place(l) {
       l = clamp(l, 0, L); var p = road.getPointAtLength(l), q = road.getPointAtLength(Math.min(L, l + 2)), b = road.getPointAtLength(Math.max(0, l - 2));
       var dx = q.x - b.x; if (Math.abs(dx) > .3) facing = dx < 0 ? -1 : 1;
-      pos.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + (p.y - 4).toFixed(1) + ') scale(1.75)'); flip.setAttribute('transform', 'scale(' + facing + ' 1)');
+      pos.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + (p.y - 4).toFixed(1) + ') scale(1.55)'); flip.setAttribute('transform', 'scale(' + facing + ' 1)');
       done.style.strokeDashoffset = (L - l).toFixed(1);
       if (Math.abs(l - len) > .5) { av.classList.add('walking'); clearTimeout(walkT); walkT = setTimeout(function () { av.classList.remove('walking'); }, 160); }
       len = l;
@@ -336,11 +389,17 @@
       tween = requestAnimationFrame(function fr(t) { if (!t0) t0 = t; var k = Math.min(1, (t - t0) / D), e2 = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; place(from + (to - from) * e2); if (k < 1) tween = requestAnimationFrame(fr); });
     }
     // desktop: progress through the section's scroll runway drives the walk; section bottom-pins so fun facts slides over it
+    var side = $('.edu-side', sec), mapWrap = $('.edu-map-wrap', sec), stageEl = $('.edu-stage', sec);
     function fit() {
+      side.style.transform = ''; mapWrap.style.maxWidth = '';
       if (mqMob.matches) { sec.style.position = ''; sec.style.top = ''; return; }
       sec.style.position = 'sticky'; sec.style.top = Math.min(0, innerHeight - sec.offsetHeight) + 'px';
+      // keep everything (incl. the last "Now" step) inside the viewport on short screens
+      var cs = getComputedStyle(stageEl), avail = innerHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      var h = side.scrollHeight; if (h > avail) { side.style.transformOrigin = 'left center'; side.style.transform = 'scale(' + (avail / h).toFixed(3) + ')'; }
+      mapWrap.style.maxWidth = Math.max(320, avail * 1000 / 640) + 'px';
     }
-    fit(); addEventListener('resize', fit);
+    fit(); addEventListener('resize', fit); if (document.fonts) document.fonts.ready.then(fit);
     // natural (un-pinned) document top: everything before it in <main> + its hold margin
     function natTop() {
       var m = sec.parentElement, y = m.getBoundingClientRect().top + scrollY + (parseFloat(getComputedStyle(sec).marginTop) || 0);
