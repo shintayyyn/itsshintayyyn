@@ -67,6 +67,7 @@
     // fun facts
     $('.aff-bg').innerHTML = sunset();
     var post = B[0], todo = F.todo || {}, song = F.song || {}, q = F.quote || {}, coded = F.coded || {};
+    var pm = String(S.spotify || '').match(/playlist[/:]([A-Za-z0-9]+)/), playlistUrl = pm ? 'https://open.spotify.com/playlist/' + pm[1] : (S.spotify || '#');
     var cover = function (it) { return window.coverArt(it, 3, 300, 190); };
     var len = song.length || 213, fmt = function (s) { s = Math.max(0, Math.round(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
     $('.about-fun-stage').innerHTML =
@@ -75,11 +76,11 @@
       '<div class="ff-card b1 pos-ct ff-wk" tabindex="0" aria-label="' + esc(todo.title) + '"><span class="ff-wk-day">' + esc(todo.day) + '</span><span class="ff-wk-dots"><i></i><i></i><i></i></span>' +
         '<div class="ff-wk-panel"><div class="ff-wk-inner"><p class="ff-wk-title">' + esc(todo.title) + '</p><div class="ff-wk-list">' +
         (todo.items || []).map(function (t) { return '<div class="r"><span class="cb"></span><span class="t">' + esc(t) + '</span></div>'; }).join('') + '</div></div></div></div>' +
-      '<a class="ff-card pos-rt ff-song" href="' + esc(S.spotify || '#') + '" target="_blank" rel="noopener" aria-label="Open my playlist on Spotify">' +
+      '<a class="ff-card pos-rt ff-song" href="' + esc(playlistUrl) + '" target="_blank" rel="noopener" aria-label="Open my playlist on Spotify">' +
         '<div class="ff-media">' + window.coverArt({ palette: ['#1b1b2f', '#1DB954', '#3a2d5c'], motif: 'orbit' }, 5, 305, 300) + '</div><div class="ff-song-grad"></div>' +
         '<div class="ff-song-pill"><span class="ff-vinyl"></span><span class="meta"><span class="a">' + esc(song.line) + ' <em>' + esc(song.em) + '</em></span><span class="b">' + esc(song.by) + '</span></span></div>' +
         '<div class="ff-song-player"><div class="ff-song-prog"><div class="ff-song-time"><span>0:00</span><span>-' + fmt(len) + '</span></div><div class="ff-song-bar"><span></span></div></div>' +
-        '<div class="ff-song-ctrls" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 6v12l-8.5-6L18 6zM8 6v12H6V6h2z"/></svg><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg><svg viewBox="0 0 24 24"><path d="M6 6v12l8.5-6L6 6zM16 6h2v12h-2V6z"/></svg></div></div></a>' +
+        '<span class="ff-song-open">Listen on Spotify ↗</span><div class="ff-song-ctrls" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M18 6v12l-8.5-6L18 6zM8 6v12H6V6h2z"/></svg><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg><svg viewBox="0 0 24 24"><path d="M6 6v12l8.5-6L6 6zM16 6h2v12h-2V6z"/></svg></div></div></a>' +
       '<div class="ff-card b1 pos-lb ff-quote" tabindex="0" aria-label="Quote: ' + esc(q.a + q.b + q.c) + '"><div class="ff-quote-grid"></div>' +
         '<svg class="ff-quote-mark" viewBox="0 0 96 96" aria-hidden="true"><path fill="#FFDA3F" d="M74.5 72h-21l8-16H52V24h32v29zM34.5 72h-21l8-16H12V24h32v29z"/></svg>' +
         '<p class="ff-quote-text"><span class="a">' + esc(q.a) + '</span><span class="b">' + esc(q.b) + '</span><span class="c">' + esc(q.c) + '</span></p><p class="ff-quote-cite">' + esc(q.cite) + '</p>' +
@@ -213,7 +214,7 @@
         var start = flowTop - st.vh * .3, end = flowTop + st.vh * .7;
         o = smooth((st.y - start) / (end - start));
       }
-      o = o.toFixed(4); if (o !== last) { stage.style.setProperty('--ff-open', o); last = o; }
+      o = o.toFixed(4); if (o !== last) { stage.style.setProperty('--ff-open', o); stage.classList.toggle('is-stacked', +o < .92); last = o; }
     });
     // song card: sweep the progress bar once per hover
     var song = $('.ff-song');

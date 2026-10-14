@@ -349,3 +349,7 @@ body.night .edu-hint { color: rgba(255, 249, 233, .6); }
   .edu-map-wrap { display: block; }
   .edu-map { margin: 0 auto; }
 }
+.about-fun-stage.is-stacked .ff-card { pointer-events: none; }
+.ff-song-open { font: 500 11px 'Space Grotesk', sans-serif; letter-spacing: .4px; color: #fff; background: #1DB954; padding: 5px 10px; border-radius: 999px; box-shadow: 0 4px 10px rgba(0, 0, 0, .25); transition: transform .3s var(--spring-pop); }
+.ff-song:hover .ff-song-open { transform: scale(1.06); }
+.ff-song-player { top: 182px; }
