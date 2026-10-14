@@ -339,7 +339,8 @@
     function (x, y) { return '<g transform="translate(' + x + ' ' + y + ')"><rect x="-34" y="-20" width="68" height="6" rx="2" fill="#8a6a4f"/><rect x="-30" y="-14" width="5" height="14" fill="#8a6a4f"/><rect x="25" y="-14" width="5" height="14" fill="#8a6a4f"/><rect x="-16" y="-40" width="30" height="20" rx="2" fill="#3b3f4a"/><rect x="-14" y="-38" width="26" height="16" rx="1" fill="#71b7f4"/><rect x="18" y="-30" width="8" height="10" rx="2" fill="#fff9f1" stroke="#2b2b2b"/><path d="M-26 -20 q-2 -16 6 -22" stroke="#5c8f3a" stroke-width="3" fill="none"/><circle cx="-20" cy="-42" r="5" fill="#9cbf52"/></g>'; }
   ];
   function eduMapSVG() {
-    var road = 'M95 560 C200 560 230 470 300 450 C390 425 420 520 520 500 C640 476 610 370 530 330 C455 292 470 212 560 190 C660 166 720 262 800 232 C870 206 860 128 905 100';
+    // every stop keeps ≥ 200 units of headroom so the character (≈185 tall) never leaves the map
+    var road = 'M95 578 C200 578 232 505 302 490 C392 470 422 548 522 532 C642 512 618 424 542 394 C472 366 486 302 572 288 C668 270 722 342 802 320 C858 304 846 246 872 222';
     var grid = ''; for (var gx = 0; gx <= 1000; gx += 40) grid += '<path d="M' + gx + ' 0V640" stroke="#efe4cd" stroke-width="1"/>'; for (var gy = 0; gy <= 640; gy += 40) grid += '<path d="M0 ' + gy + 'H1000" stroke="#efe4cd" stroke-width="1"/>';
     return '<svg viewBox="0 0 1000 640" role="img" aria-label="Map of my education journey"><defs><linearGradient id="edusea" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9fd0f5"/><stop offset="1" stop-color="#5aa9e6"/></linearGradient>' +
       '<radialGradient id="eduSkin" cx=".4" cy=".35" r=".75"><stop offset="0" stop-color="#fbdcc4"/><stop offset=".7" stop-color="#f2c6a5"/><stop offset="1" stop-color="#e3a985"/></radialGradient>' +
@@ -353,7 +354,7 @@
       '<path d="M1000 300 C930 330 900 420 940 470 C980 520 950 600 1000 640Z" fill="url(#edusea)"/><path d="M948 380 q10 -6 20 0 M958 470 q10 -6 20 0 M944 560 q10 -6 20 0" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
       '<path d="M40 210 L110 120 L150 170 L200 100 L270 210Z" fill="#cfd8b8"/><path d="M200 100 l-14 18 l14 -4 l14 6z" fill="#fff"/>' +
       '<g transform="translate(70 70)"><circle r="26" fill="#fff9f1" stroke="#2b2b2b" stroke-width="1.5"/><path d="M0 -22 L6 0 L0 22 L-6 0Z" fill="#fc9073"/><path d="M-22 0 L0 -5 L22 0 L0 5Z" fill="#e7dfcd"/><text y="-30" text-anchor="middle" font-size="12" font-family="Space Grotesk" fill="#2b2b2b">N</text></g>' +
-      [[150, 420], [400, 600], [690, 560], [620, 120], [360, 260], [760, 380], [240, 330], [470, 90], [860, 600]].map(function (t, i) { return tree(t[0], t[1], .8 + (i % 3) * .15); }).join('') +
+      [[150, 430], [400, 615], [690, 590], [640, 160], [360, 250], [770, 420], [230, 330], [470, 150], [860, 610], [930, 150]].map(function (t, i) { return tree(t[0], t[1], .8 + (i % 3) * .15); }).join('') +
       '<text x="955" y="430" font-family="JetBrains Mono" font-size="12" fill="#2f6f9c" transform="rotate(-70 955 430)">CEBU STRAIT</text>' +
       '<path class="edu-road-base" d="' + road + '"/><path class="edu-road-trail" d="' + road + '"/><path class="edu-road-done" id="edu-road-done" d="' + road + '"/>' +
       '<path id="edu-road" d="' + road + '" fill="none" stroke="none"/><g class="edu-landmarks"></g><g class="edu-pins"></g>' +
@@ -378,7 +379,7 @@
     var pinLen = EDU.map(function (_, i) { return L * i / (n - 1); });
     var pins = pinLen.map(function (l) { return road.getPointAtLength(l); });
     // landmarks beside each pin, then the numbered pins
-    $('.edu-landmarks', sec).innerHTML = pins.map(function (p, i) { var side = i % 2 ? -1 : 1; return (LANDMARKS[i] || LANDMARKS[LANDMARKS.length - 1])(p.x + side * 78, p.y - 18); }).join('');
+    $('.edu-landmarks', sec).innerHTML = pins.map(function (p, i) { var side = i % 2 ? -1 : 1; if (p.x + side * 78 > 900) side = -1; return (LANDMARKS[i] || LANDMARKS[LANDMARKS.length - 1])(clamp(p.x + side * 78, 80, 900), p.y - 18); }).join('');
     $('.edu-pins', sec).innerHTML = pins.map(function (p, i) {
       var w = EDU[i].level.length * 8 + 22;
       return '<g class="edu-pin" data-i="' + i + '" tabindex="0" role="button" aria-label="' + esc(EDU[i].level + ', ' + EDU[i].years) + '" transform="translate(' + p.x.toFixed(1) + ' ' + p.y.toFixed(1) + ')">' +
@@ -390,7 +391,7 @@
     function place(l) {
       l = clamp(l, 0, L); var p = road.getPointAtLength(l), q = road.getPointAtLength(Math.min(L, l + 2)), b = road.getPointAtLength(Math.max(0, l - 2));
       var dx = q.x - b.x; if (Math.abs(dx) > .3) facing = dx < 0 ? -1 : 1;
-      pos.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + (p.y - 4).toFixed(1) + ') scale(1.55)'); flip.setAttribute('transform', 'scale(' + facing + ' 1)');
+      pos.setAttribute('transform', 'translate(' + p.x.toFixed(1) + ' ' + (p.y - 4).toFixed(1) + ') scale(1.45)'); flip.setAttribute('transform', 'scale(' + facing + ' 1)');
       done.style.strokeDashoffset = (L - l).toFixed(1);
       if (Math.abs(l - len) > .5) { av.classList.add('walking'); clearTimeout(walkT); walkT = setTimeout(function () { av.classList.remove('walking'); }, 160); }
       len = l;
